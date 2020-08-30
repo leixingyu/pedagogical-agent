@@ -74,6 +74,7 @@ public class GlobalControl : MonoBehaviour
 			}
 		}
 	}
+	
 
 	// avoid close transitioning
 	IEnumerator emitor()

@@ -1,5 +1,5 @@
 <xml character="David">
-    <facial emotion="happy" strength="100" start="0"/>
+    <facial emotion="happy" start="0"/>
     <foot status="lock" start="0"/>
     <hand side="L" shape="Relax" start="0"/>
     <hand side="R" shape="Relax" start="0"/>

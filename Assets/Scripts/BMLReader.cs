@@ -1,12 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using System.Xml;
-using System.Xml.Serialization;
-using System.Xml.Linq;
-
-using System.IO;
 
 public class BMLReader : MonoBehaviour
 {
@@ -49,9 +44,9 @@ public class BMLReader : MonoBehaviour
 	private void TriggerEvent(string eventName)
 	{
 		if (eventName == "gesture") {
-			float speed = 1.0f, blend = 0.15f;
 			int poseIndex = int.Parse(root.ChildNodes.Item(action).Attributes["pose"].Value);
-			
+
+			float speed = 1.0f, blend = 0.15f;
 			if(root.ChildNodes.Item(action).Attributes["speed"] != null)
 				speed = float.Parse(root.ChildNodes.Item(action).Attributes["speed"].Value);
 			if (root.ChildNodes.Item(action).Attributes["blend"] != null)
@@ -63,7 +58,8 @@ public class BMLReader : MonoBehaviour
 		{
 			int strength = 100;
 			string emotion = root.ChildNodes.Item(action).Attributes["emotion"].Value;
-			strength = int.Parse(root.ChildNodes.Item(action).Attributes["strength"].Value);
+			if(root.ChildNodes.Item(action).Attributes["strength"] != null)
+				strength = int.Parse(root.ChildNodes.Item(action).Attributes["strength"].Value);
 			currentEvent.setFacialExpression(emotion, strength);
 		}
 
