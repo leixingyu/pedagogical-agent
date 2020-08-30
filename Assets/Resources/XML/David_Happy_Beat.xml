@@ -1,0 +1,29 @@
+<xml character="Luna">
+    <facial emotion="happy" start="0"/>
+    <foot status="lock" start="0"/>
+    <gesture pose="40" start="0" speed="1.0"/>
+
+    <gesture pose="22" start="5.8" speed="0.8"/>
+    <gesture pose="13" start="11.8"/>
+    <gesture pose="26" start="17" speed="0.7"/>
+    <gesture pose="34" start="27"/>
+    
+    <gesture pose="5" start="36" blend="0.1"/>
+    <hand side="L" shape="Palm" start="36"/>
+    
+    <gesture pose="11" start="38.5" blend="0.1"/>
+    <hand side="L" shape="Relax" start="38.5"/>
+    
+    <gesture pose="5" start="41" blend="0.1"/>
+    <hand side="L" shape="Palm" start="41"/>
+    
+    <gesture pose="11" start="44" speed="0.8"/>
+    <hand side="L" shape="Relax" start="44"/>
+    <gesture pose="45" start="51" speed="0.7"/>
+    
+    <gesture pose="5" start="53"/>
+    <hand side="L" shape="Palm" start="53"/>
+    
+    <gesture pose="11" start="58"/>
+    <hand side="L" shape="Relax" start="58"/>
+</xml>

@@ -1,0 +1,18 @@
+<xml character="Luna">
+    <facial emotion="bored" start="0"/>
+    <foot status="lock" start="0"/>
+    <gesture pose="46" start="0" speed="0.8"/>
+    
+    <gesture pose="5" start="53" blend="0.25" speed="0.8"/>
+    <hand side="L" shape="Palm" start="54"/>
+    
+    <gesture pose="46" start="56" blend="0.3"/>
+    <hand side="L" shape="Relax" start="56"/>
+    
+    <gesture pose="5" start="65" blend="0.25" speed="0.8"/>
+    <hand side="L" shape="Palm" start="65.5"/>
+    
+    <gesture pose="47" start="68" blend="0.25" speed="0.8"/>
+    <hand side="L" shape="Relax" start="68"/>
+
+</xml>
