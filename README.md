@@ -51,6 +51,7 @@ __Components and Parameters__:
 
 __Illustration__:
 
+![](https://github.com/sheldonlei/pedagogical-agent/blob/master/Assets/Resources/systemOverview.jpg)
 
 ## Plugin
 
