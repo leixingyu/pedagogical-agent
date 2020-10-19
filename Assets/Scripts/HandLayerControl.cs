@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/* Setup Hand control by accessing pre-set animator components
+ * Needs to be called by the global control or in other places */
+
 public class HandLayerControl : MonoBehaviour
 {
 	static Animator anim;
-
-	public enum HandPose
-	{
-		Relax,
-		Palm,
-		Fist,
-		FistRelax,
-	}
 
 	// Start is called before the first frame update
 	void Start()

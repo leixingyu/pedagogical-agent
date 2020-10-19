@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
  
+/* Get AudioSource automatically and trigger events
+ * Works standalone */
+
  public class BeatDetection : MonoBehaviour
 {
-
 	public AudioSource audioClip;
 	private float[] historyBuffer = new float[43];
 	private float[] channelRight;
@@ -14,15 +16,16 @@ using UnityEngine;
 	float AverageSpec;
 	float VarianceSum;
 	float Variance;
+
 	public float Constant;
 	public float interval = 4.0f;
 	public float min_duration;
 	public float max_duration;
 
-	float startTime;
-	float currentTime;
-	float lastTriggerTime = 0;
-	bool idleFlag = false;
+	private float startTime;
+	private float currentTime;
+	private float lastTriggerTime = 0;
+	private bool idleFlag = false;
 
 	[Header("Events")]
 	public OnBeatEventHandler onBeat;

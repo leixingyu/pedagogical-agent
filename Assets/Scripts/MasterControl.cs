@@ -1,29 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RootMotion.Demos;
 using System;
+using System.Threading;
 
-public class GlobalControl : MonoBehaviour
+/* Master (Main) control wrapper of character behavior: 
+ *		[offset ctrl] + [mecanim pose ctrl] + [legIK ctrl] + [facial expression ctrl] + [hand shape ctrl]
+ * Create GUI and allow control
+ * Allow BML reader to acess all the control */
+
+public class MasterControl : MonoBehaviour
 {
 	public GameObject character;		// assign character
 	public GameObject skinnedMesh;		// assign skinned mesh under character
-	public bool Offset = false;
 	public bool Interface = false;
 
-	private EffectorOffset charOffsetCtrl;
+	private MainOffset mainOffsetCtrl;
 	private SpineOffset spineOffsetCtrl;
 	private MecanimControl mecanimControl;
 	private LegIKControl legControl;
 	private FacialBlendShape facialControl;
+	private SignalRequester requester;
 
-	private bool emitorFlag = false;
-
-	private bool mirror = false;
 	private float animSpeed = 1.0f;
 	private float currentRotation = 0.0f;
 	private float blendDuration = 0.15f;
-	private float emitTime = 2.0f;
+	private bool emitorFlag = false;
 	private bool ikStatus = false;
 	private int strength = 100;
 
@@ -33,7 +35,7 @@ public class GlobalControl : MonoBehaviour
 		mecanimControl = character.GetComponent<MecanimControl>();
 		legControl = gameObject.GetComponent<LegIKControl>();
 		facialControl = skinnedMesh.GetComponent<FacialBlendShape>();
-		charOffsetCtrl = character.GetComponent<EffectorOffset>();
+		mainOffsetCtrl = character.GetComponent<MainOffset>();
 		spineOffsetCtrl = character.GetComponent<SpineOffset>();
 	}
 
@@ -63,9 +65,8 @@ public class GlobalControl : MonoBehaviour
 				setFacialExpression("content");
 
 			// hand shape
-			int max = 3;
-			Array handPose = Enum.GetValues(typeof(HandLayerControl.HandPose));
-			for (int i = 0; i < max; i++)
+			Array handPose = Enum.GetValues(typeof(Global.HandPose));
+			for (int i = 0; i < Setting.handShape; i++)
 			{
 				if (GUI.Button(new Rect(250, 20 + 40 * i, 100, 20), handPose.GetValue(Convert.ToInt32(i)).ToString()))
 					setHandShape("L", handPose.GetValue(Convert.ToInt32(i)).ToString());
@@ -74,54 +75,23 @@ public class GlobalControl : MonoBehaviour
 			}
 		}
 	}
-	
+
+	private void OnDestory()
+	{
+		requester.Stop();
+	}
 
 	// avoid close transitioning
 	IEnumerator emitor()
 	{
 		emitorFlag = true;
-		yield return new WaitForSeconds(emitTime);
+		yield return new WaitForSeconds(Setting.emitTime);
 		emitorFlag = false;
-	}
-
-	// add offset transitioning between poses
-	IEnumerator leftHandOffset(float nextValue, int frames = 20)
-	{
-		float previousVal = charOffsetCtrl.leftHandOffset[0];
-		for (int i = 0; i <= frames; i++)
-		{
-			yield return null;
-			float currentVal = Mathf.Lerp(previousVal, nextValue, (float)i / (float)frames);
-			charOffsetCtrl.leftHandOffset.Set(currentVal, 0.0f, 0.0f);
-		}
-	}
-
-	IEnumerator spineOffset(float nextValue, int frames = 20)
-	{
-		float previousVal = spineOffsetCtrl.offset;
-		for (int i = 0; i <= frames; i++)
-		{
-			yield return null;
-			float currentVal = Mathf.Lerp(previousVal, nextValue, (float)i / (float)frames);
-			spineOffsetCtrl.offset = currentVal;
-		}
 	}
 
 	public void changePose(int poseIndex, float speed=1.0f, float blend=0.15f)
 	{
 		if (!emitorFlag) { 
-			// apply offset
-			if(poseIndex == 2 && Offset)
-			{
-				StartCoroutine(leftHandOffset(-0.1f));
-				StartCoroutine(spineOffset(10f));
-			}
-			else if(Offset)
-			{
-				StartCoroutine(leftHandOffset(0.0f));
-				StartCoroutine(spineOffset(0f));
-			}
-
 			mecanimControl.Play(mecanimControl.animations[poseIndex], blend);
 			mecanimControl.SetSpeed(speed);
 			StartCoroutine(emitor());  // avoid frequent transition
@@ -189,6 +159,26 @@ public class GlobalControl : MonoBehaviour
 		}
 	}
 
+	public void characterOffset(string type, int strength) {
+		Global.BodyOffset offsetType = Global.BodyOffset.NEUTRAL;
+		if (type == "forward") offsetType = Global.BodyOffset.FORWARD;
+		else if (type == "backward") offsetType = Global.BodyOffset.BACKWARD;
+		else if (type == "inward") offsetType = Global.BodyOffset.INWARD;
+		else if (type == "outward") offsetType = Global.BodyOffset.OUTWARD;
+
+		StartCoroutine(spineOffsetCtrl.spineOffset(offsetType, strength));
+		StartCoroutine(mainOffsetCtrl.bodyOffset(offsetType, strength));
+	}
+
+	public void requestSignal(string message)
+	{
+		ViewerEmotion.lastEmotion = ViewerEmotion.currentEmotion;
+		ViewerEmotion.reset = true;
+		requester = new SignalRequester();
+		requester.message = message;
+		requester.Start();
+	}
+
 	private void mecanimGUI()
 	{
 		GUILayout.BeginVertical();
@@ -204,17 +194,6 @@ public class GlobalControl : MonoBehaviour
 		GUILayout.Label("Blending (" + blendDuration.ToString("0.00") + ")");
 		blendDuration = GUILayout.HorizontalSlider(blendDuration, 0.0f, 1.0f);
 		mecanimControl.defaultTransitionDuration = blendDuration;
-
-		GUILayout.Space(10);
-
-		if (GUILayout.Button("Mirror " + mirror))
-		{
-			mirror = !mirror;
-			mecanimControl.SetMirror(mirror);
-		}
-
-		if (GUILayout.Button("Debug " + mecanimControl.debugMode))
-			mecanimControl.debugMode = !mecanimControl.debugMode;
 
 		GUILayout.Space(10);
 

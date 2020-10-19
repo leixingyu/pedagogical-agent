@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/* Setup Pose transition for character animation
+ * Needs to be called by the global control or in other places */
+
 [System.Serializable]
 public class AnimationData {
 	public AnimationClip clip;

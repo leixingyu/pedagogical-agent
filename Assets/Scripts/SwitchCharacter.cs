@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/* Switch character by updating scene
+ * works standalone */
+
 public class SwitchCharacter : MonoBehaviour
 {
 	public void SwitchToDavid() {

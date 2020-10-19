@@ -2,51 +2,77 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Setup Offset component for character spine
+ * Needs to be called by the global control or in other places */
+
 public class SpineOffset : MonoBehaviour
 {
-	public float offset;
-	private List<Vector3> initialRotation = new List<Vector3>();
+	public float offset = 0.0f;
 
+	private float initialZRot;
 	private string character;
 	private List<string> spineList;
-	public List<GameObject> spineJoints;
+	public List<GameObject> spineJoints;  // this has to be public otherwise error
 
-
-    // Start is called before the first frame update
     void Start()
     {
 		character = gameObject.name;
-		if (character == "Luna_defined")
-			spineList = new List<string>{ "Rig_Group/Root_Jnt/Pelvis_Jnt/Spine_2_Jnt",
-				"Rig_Group/Root_Jnt/Pelvis_Jnt/Spine_2_Jnt/Spine_3_Jnt" };
-		else if(character == "David_defined")
-		{
+		if (character == Global.Luna)
+			spineList = Global.LunaSpine;
 
-		}
+		else if (character == Global.David)
+			spineList = Global.DavidSpine;
 
+		// add spine transform to list
 		foreach (string spine in spineList) {
 			GameObject spineJnt = GameObject.Find(spine);
-			initialRotation.Add(spineJnt.transform.eulerAngles);
+			Debug.Assert(spineJnt, "spine joint not found for offset" );
+			initialZRot = spineJnt.transform.eulerAngles[2];
 			spineJoints.Add(spineJnt);
 		}
+
     }
 
-	
-	// Update is called once per frame
 	void LateUpdate()
 	{
-		if(character == "Luna_defined")
+		if(character == Global.Luna)
 		{
-			spineJoints[0].transform.eulerAngles = initialRotation[0] + new Vector3(0, 0, offset);
-			spineJoints[1].transform.eulerAngles = initialRotation[1] - new Vector3(0, 0, offset);
+			spineJoints[0].transform.eulerAngles = new Vector3(spineJoints[0].transform.eulerAngles[0],
+										  spineJoints[0].transform.eulerAngles[1],
+										  initialZRot + offset);
+
+			spineJoints[1].transform.eulerAngles = new Vector3(spineJoints[1].transform.eulerAngles[0],
+										  spineJoints[1].transform.eulerAngles[1],
+										  initialZRot - offset);
 		}
 		else { 
 			int index = 0;
 			foreach (GameObject spine in spineJoints) {
-				spine.transform.eulerAngles = initialRotation[index] + new Vector3(0, 0, offset);
+				spine.transform.eulerAngles = new Vector3(spine.transform.eulerAngles[0],
+														  spine.transform.eulerAngles[1],
+														  initialZRot - offset);
 				index++;
 			}
 		}
     }
-	
+
+	public IEnumerator spineOffset(Global.BodyOffset type, float strength = 100.0f, int frames = Setting.bodyOffsetBlend)
+	{
+		float previous = offset;
+		float next;
+
+		if (type == Global.BodyOffset.FORWARD)
+			next = Setting.bodyLeanExtreme * strength / 100.0f;
+		else if (type == Global.BodyOffset.BACKWARD)
+			next = Setting.bodyLeanExtreme * strength / 100.0f;
+		else
+			next = 0.0f;
+
+		for (int i = 0; i <= frames; i++)
+		{
+			yield return null;
+			float currentVal = Mathf.Lerp(previous, next, (float)i / (float)frames);
+			offset = currentVal;
+		}
+	}
 }

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
 
+/* Takes a BML and triggers series of event (controls)
+ * Calls Global control functionality */
+
 public class BMLReader : MonoBehaviour
 {
 	XmlDocument xml = new XmlDocument();
 	XmlNode root;
 
-	public GlobalControl currentEvent;
+	public MasterControl currentEvent;
 	public TextAsset file;
 
 	float startTime;
@@ -47,11 +50,20 @@ public class BMLReader : MonoBehaviour
 			int poseIndex = int.Parse(root.ChildNodes.Item(action).Attributes["pose"].Value);
 
 			float speed = 1.0f, blend = 0.15f;
+			string type = "neutral";
+			int strength = 100;
+
 			if(root.ChildNodes.Item(action).Attributes["speed"] != null)
 				speed = float.Parse(root.ChildNodes.Item(action).Attributes["speed"].Value);
 			if (root.ChildNodes.Item(action).Attributes["blend"] != null)
 				blend = float.Parse(root.ChildNodes.Item(action).Attributes["blend"].Value);
 			currentEvent.changePose(poseIndex, speed, blend);
+
+			if (root.ChildNodes.Item(action).Attributes["offset"] != null)
+				type = root.ChildNodes.Item(action).Attributes["offset"].Value;
+			if (root.ChildNodes.Item(action).Attributes["strength"] != null)
+				blend = int.Parse(root.ChildNodes.Item(action).Attributes["blend"].Value);
+			currentEvent.characterOffset(type, strength);
 		}
 
 		if (eventName == "facial")
@@ -77,6 +89,12 @@ public class BMLReader : MonoBehaviour
 				currentEvent.footLock(true);
 			else
 				currentEvent.footLock(false);
+		}
+
+		if (eventName == "request")
+		{
+			string message = root.ChildNodes.Item(action).Attributes["message"].Value;
+			currentEvent.requestSignal(message);
 		}
 	}
 }

@@ -7,9 +7,13 @@
 
     <facial emotion="happy" strength="20" start="3"/>
   
-    <gesture pose="3" start="33" blend="0.1"/>
+    <request message ="checkpoint 1" start="3"/>
+  
+    <gesture pose="3" start="3" blend="0.1"/>
 
-    <gesture pose="3" start="43" blend="0.1"/>
+    <gesture pose="3" start="5" blend="0.1"/>
+
+    <request message ="checkpoint 2" start="5"/>
 
     <gesture pose="3" start="63" blend="0.1"/>
     

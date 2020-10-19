@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Setup Facial Expression component for character of different emotion
+ * Needs to be called by the global control or in other places */
+
 public class FacialBlendShape : MonoBehaviour
 {
 	SkinnedMeshRenderer facialCtrl;
 	Mesh characterMesh;
-	int blendShapeCount;
-	int facialStartIndex = 4;
-	string character;
 
-	const int defaultTransFrame = 12;
-	const int browTransFrame = 6;
+	private int blendShapeCount;
+	private int facialStartIndex = 4;  // index 0, 1, 2, 3 for visem and eyeblink
+	private string character;
 
 	// Start is called before the first frame update
 	void OnEnable()
@@ -27,7 +28,7 @@ public class FacialBlendShape : MonoBehaviour
 		blendShapeCount = characterMesh.blendShapeCount;
 	}
 
-	public IEnumerator blendToWeight(int index, float targetWeight, int frames = defaultTransFrame)
+	public IEnumerator blendToWeight(int index, float targetWeight, int frames = Setting.facialBlend)
 	{
 		float currentWeight = facialCtrl.GetBlendShapeWeight(index);
 
@@ -55,9 +56,9 @@ public class FacialBlendShape : MonoBehaviour
 		System.Random rnd = new System.Random();
 		float randSec = Random.Range(0.75f, 1.25f);
 		int targetWeight = rnd.Next(80, 100);
-		StartCoroutine(blendToWeight(browIndex, targetWeight, browTransFrame));
+		StartCoroutine(blendToWeight(browIndex, targetWeight, Setting.browBlend));
 		yield return new WaitForSeconds(randSec);
-		StartCoroutine(blendToWeight(browIndex, 20, browTransFrame));
+		StartCoroutine(blendToWeight(browIndex, 20, Setting.browBlend));
 	}
 
 	public void setHappy(int strength)

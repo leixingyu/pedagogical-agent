@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/* Attach this to the camera slider */
+/* Adjust Camera position and angle
+ * Attach this to the camera slider */
 
 public class CameraPosition : MonoBehaviour
 {
