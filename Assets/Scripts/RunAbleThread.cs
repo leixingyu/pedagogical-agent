@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 
-
 /// <summary>
 ///     The superclass that you should derive from. It provides Start() and Stop() method and Running property.
 ///     It will start the thread to run Run() when you call Start().

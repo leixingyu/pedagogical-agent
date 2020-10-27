@@ -8,11 +8,12 @@ using UnityEngine;
 public class SpineOffset : MonoBehaviour
 {
 	public float offset = 0.0f;
-
-	private float initialZRot;
 	private string character;
 	private List<string> spineList;
-	public List<GameObject> spineJoints;  // this has to be public otherwise error
+
+	//has to be public otherwise won't work
+	public List<GameObject> spineJoints; 
+	public List<float> initialRot;
 
     void Start()
     {
@@ -27,10 +28,9 @@ public class SpineOffset : MonoBehaviour
 		foreach (string spine in spineList) {
 			GameObject spineJnt = GameObject.Find(spine);
 			Debug.Assert(spineJnt, "spine joint not found for offset" );
-			initialZRot = spineJnt.transform.eulerAngles[2];
 			spineJoints.Add(spineJnt);
+			initialRot.Add(spineJnt.transform.eulerAngles[2]);
 		}
-
     }
 
 	void LateUpdate()
@@ -38,19 +38,19 @@ public class SpineOffset : MonoBehaviour
 		if(character == Global.Luna)
 		{
 			spineJoints[0].transform.eulerAngles = new Vector3(spineJoints[0].transform.eulerAngles[0],
-										  spineJoints[0].transform.eulerAngles[1],
-										  initialZRot + offset);
+															   spineJoints[0].transform.eulerAngles[1],
+															   initialRot[0] + offset);
 
 			spineJoints[1].transform.eulerAngles = new Vector3(spineJoints[1].transform.eulerAngles[0],
-										  spineJoints[1].transform.eulerAngles[1],
-										  initialZRot - offset);
+															   spineJoints[1].transform.eulerAngles[1],
+															   initialRot[1] - offset);
 		}
 		else { 
 			int index = 0;
 			foreach (GameObject spine in spineJoints) {
 				spine.transform.eulerAngles = new Vector3(spine.transform.eulerAngles[0],
 														  spine.transform.eulerAngles[1],
-														  initialZRot - offset);
+														  initialRot[index] - offset);
 				index++;
 			}
 		}

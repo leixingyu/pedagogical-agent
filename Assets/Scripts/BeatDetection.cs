@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
  
 /* Get AudioSource automatically and trigger events
  * Works standalone */

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /* Switch character by updating scene
@@ -14,10 +12,5 @@ public class SwitchCharacter : MonoBehaviour
 
 	public void SwitchToLuna() {
 		SceneManager.LoadScene("Luna");
-	}
-
-	public void SwitchToDana()
-	{
-		SceneManager.LoadScene("Dana");
 	}
 }

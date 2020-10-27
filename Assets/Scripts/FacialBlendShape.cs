@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /* Setup Facial Expression component for character of different emotion
@@ -18,11 +17,11 @@ public class FacialBlendShape : MonoBehaviour
 	void OnEnable()
     {
 		facialCtrl = GetComponent<SkinnedMeshRenderer>();	
-		if(facialCtrl.name == "Mesh_Luna_Full")
-			character = "Luna";
+		if(facialCtrl.name == Global.LunaMesh)
+			character = Global.Luna;
 
-		else if (facialCtrl.name == "base")
-			character = "David";
+		else if (facialCtrl.name == Global.DavidMesh)
+			character = Global.David;
 
 		characterMesh = facialCtrl.sharedMesh;
 		blendShapeCount = characterMesh.blendShapeCount;
@@ -43,15 +42,15 @@ public class FacialBlendShape : MonoBehaviour
 	public void resetBlendShape() {
 		for (int i = facialStartIndex; i < blendShapeCount; i++)
 		{
-			if (character != "Luna" || i != 17) // exlude reseting luna chest fix
+			if (character != Global.Luna || i != 17) // exlude reseting luna chest fix
 				StartCoroutine(blendToWeight(i, 0));
 		}
 	}
 
 	public IEnumerator browRaise() {
 		int browIndex = 0;
-		if (character == "David")	browIndex = 6;
-		else if (character == "Luna")	browIndex = 20;
+		if (character == Global.David)	browIndex = 6;
+		else if (character == Global.Luna)	browIndex = 20;
 
 		System.Random rnd = new System.Random();
 		float randSec = Random.Range(0.75f, 1.25f);
@@ -64,12 +63,12 @@ public class FacialBlendShape : MonoBehaviour
 	public void setHappy(int strength)
 	{
 		resetBlendShape();
-		if (character == "David") { 
+		if (character == Global.David) { 
 			StartCoroutine(blendToWeight(9, 0.2f * strength));
 			StartCoroutine(blendToWeight(10, 0.4f * strength));
 			StartCoroutine(blendToWeight(13, 0.6f * strength));	
 		}
-		else if (character == "Luna")
+		else if (character == Global.Luna)
 		{
 			StartCoroutine(blendToWeight(11, 0.7f * strength));
 			StartCoroutine(blendToWeight(16, 0.6f * strength));
@@ -80,13 +79,13 @@ public class FacialBlendShape : MonoBehaviour
 
 	public void setBored(int strength) {
 		resetBlendShape();
-		if (character == "David")
+		if (character == Global.David)
 		{
 			StartCoroutine(blendToWeight(4, 1.0f * strength));
 			StartCoroutine(blendToWeight(6, 0.5f * strength));
 			StartCoroutine(blendToWeight(9, 0.7f * strength));
 		}
-		else if (character == "Luna")
+		else if (character == Global.Luna)
 		{
 			StartCoroutine(blendToWeight(20, 1.0f * strength));
 			StartCoroutine(blendToWeight(15, 1.0f * strength));
@@ -95,7 +94,7 @@ public class FacialBlendShape : MonoBehaviour
 
 	public void setAngry(int strength) {
 		resetBlendShape();
-		if (character == "David")
+		if (character == Global.David)
 		{
 			StartCoroutine(blendToWeight(5, 1.0f * strength));
 			StartCoroutine(blendToWeight(7, 0.3f * strength));
@@ -103,7 +102,7 @@ public class FacialBlendShape : MonoBehaviour
 			StartCoroutine(blendToWeight(10, 0.5f * strength));
 			StartCoroutine(blendToWeight(11, 1.0f * strength));
 		}
-		else if (character == "Luna")
+		else if (character == Global.Luna)
 		{
 			StartCoroutine(blendToWeight(4, 0.75f * strength));
 			StartCoroutine(blendToWeight(5, 0.75f * strength));
@@ -114,12 +113,12 @@ public class FacialBlendShape : MonoBehaviour
 
 	public void setContent(int strength) {
 		resetBlendShape();
-		if (character == "David")
+		if (character == Global.David)
 		{
 			StartCoroutine(blendToWeight(6, 1.0f * strength));
 			StartCoroutine(blendToWeight(9, 0.4f * strength));
 		}
-		else if (character == "Luna")
+		else if (character == Global.Luna)
 		{
 			StartCoroutine(blendToWeight(11, 0.15f * strength));
 			StartCoroutine(blendToWeight(21, 0.4f * strength));

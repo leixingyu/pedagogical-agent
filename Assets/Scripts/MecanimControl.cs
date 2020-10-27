@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 /* Setup Pose transition for character animation
@@ -58,11 +57,11 @@ public class MecanimControl : MonoBehaviour {
 
 		switch (animator.name)
 		{
-			case "David_defined":
-				controller1 = Resources.Load<RuntimeAnimatorController>("Controller/David_controller");
+			case Global.David:
+				controller1 = Resources.Load<RuntimeAnimatorController>(Global.DavidController);
 				break;
-			case "Luna_defined":
-				controller1 = Resources.Load<RuntimeAnimatorController>("Controller/Luna_controller");
+			case Global.Luna:
+				controller1 = Resources.Load<RuntimeAnimatorController>(Global.LunaController);
 				break;
 			default:
 				controller1 = Resources.Load<RuntimeAnimatorController>("Controller/controller1");
@@ -190,9 +189,6 @@ public class MecanimControl : MonoBehaviour {
 				break;
 			case "Luna_defined":
 				filePath = "Luna_Clips";
-				break;
-			case "Dana_defined":
-				filePath = "Dana_Clips";
 				break;
 		}
 
