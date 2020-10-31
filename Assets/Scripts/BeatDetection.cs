@@ -59,7 +59,10 @@
 		//channelLeft = song.GetSpectrumData (1024, 2, FFTWindow.Hamming);  //Rafa
 
 		//InstantSpec = sumStereo (channelLeft, channelRight);  //Normal
-		InstantSpec = sumStereo2(audioClip.GetSpectrumData(SamplesSize, 0, FFTWindow.Hamming));  //Rafa
+		//InstantSpec = sumStereo2(audioClip.GetSpectrumData(SamplesSize, 0, FFTWindow.Hamming));  //Rafa - Deprecated
+		float[] sample = new float[SamplesSize];
+		audioClip.GetSpectrumData(sample, 0, FFTWindow.Hamming);
+		InstantSpec = sumStereo2(sample);
 
 		//compute local average sound evergy
 		//AverageSpec = sumLocalEnergy ()/historyBuffer.Length; // E being the average local sound energy  //Normal

@@ -9,32 +9,36 @@ using System;
 
 public class MasterControl : MonoBehaviour
 {
-	public GameObject character;		// assign character
-	public GameObject skinnedMesh;		// assign skinned mesh under character
 	public bool Interface = false;
 
+	private GameObject character;       // assigned character
 	private MainOffset mainOffsetCtrl;
 	private SpineOffset spineOffsetCtrl;
 	private MecanimControl mecanimControl;
 	private LegIKControl legControl;
 	private FacialBlendShape facialControl;
 	private SignalRequester requester;
+	private ChangeSlide slideControl;
 
-	private float animSpeed = 1.0f;
-	private float currentRotation = 0.0f;
-	private float blendDuration = 0.15f;
-	private bool emitorFlag = false;
-	private bool ikStatus = false;
-	private int strength = 100;
+	float animSpeed = 1.0f;
+	float currentRotation = 0.0f;
+	float blendDuration = 0.15f;
+	bool emitorFlag = false;
+	bool ikStatus = false;
+	int strength = 100;
 
-	// Start is called before the first frame update
 	void Start()
     {
-		mecanimControl = character.GetComponent<MecanimControl>();
-		legControl = gameObject.GetComponent<LegIKControl>();
-		facialControl = skinnedMesh.GetComponent<FacialBlendShape>();
-		mainOffsetCtrl = character.GetComponent<MainOffset>();
-		spineOffsetCtrl = character.GetComponent<SpineOffset>();
+		character = GameObject.FindGameObjectWithTag("Player");
+
+		// Simple components added during runtime
+		mecanimControl = character.AddComponent<MecanimControl>();
+		legControl = character.AddComponent<LegIKControl>();
+		mainOffsetCtrl = character.AddComponent<MainOffset>();
+		spineOffsetCtrl = character.AddComponent<SpineOffset>();
+		character.AddComponent<HandLayerControl>();		// static function, called directly
+		facialControl = character.AddComponent<FacialBlendShape>();
+		slideControl = gameObject.AddComponent<ChangeSlide>();
 	}
 
 	void OnGUI()
@@ -52,15 +56,14 @@ public class MasterControl : MonoBehaviour
 
 			// facial expression preset
 			strength = (int)GUI.HorizontalSlider(new Rect(800, 0, 100, 20), strength, 0f, 100f);
-
-			if (GUI.Button(new Rect(800, 20, 100, 20), "Bored"))
-				setFacialExpression("bored");
-			if (GUI.Button(new Rect(800, 40, 100, 20), "Happy"))
-				setFacialExpression("happy", strength);
-			if (GUI.Button(new Rect(800, 60, 100, 20), "Angry"))
-				setFacialExpression("angry");
-			if (GUI.Button(new Rect(800, 80, 100, 20), "Content"))
-				setFacialExpression("content");
+			if (GUI.Button(new Rect(800, 20, 100, 20), "Angry"))
+				setFacialExpression("Angry");
+			if (GUI.Button(new Rect(800, 40, 100, 20), "Bored"))
+				setFacialExpression("Bored");
+			if (GUI.Button(new Rect(800, 60, 100, 20), "Content"))
+				setFacialExpression("Content");
+			if (GUI.Button(new Rect(800, 80, 100, 20), "Happy"))
+				setFacialExpression("Happy", strength);
 
 			// hand shape
 			Array handPose = Enum.GetValues(typeof(Global.HandPose));
@@ -79,7 +82,7 @@ public class MasterControl : MonoBehaviour
 		requester.Stop();
 	}
 
-	// avoid close transitioning
+	// avoid rapid transitioning
 	IEnumerator emitor()
 	{
 		emitorFlag = true;
@@ -98,16 +101,40 @@ public class MasterControl : MonoBehaviour
 
 	public void randomBeat()
 	{
-		//int[] beatList = { 8, 9, 10, 11, 12, 13, 14, 15, 22, 23, 25, 27, 28, 29, 30, 43};  Luna
-		int[] beatList = { 5, 6, 7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 26, 27};
+		int[] beatList;
+		switch (character.name)
+		{
+			case Global.David:
+				beatList = Global.DavidBeatGestures;
+				break;
+			case Global.Luna:
+				beatList = Global.LunaBeatGestures;
+				break;
+			default:
+				beatList = null;
+				break;
+		}
+
 		System.Random rnd = new System.Random();
 		int beatIndex = rnd.Next(0, beatList.Length);
 		changePose(beatList[beatIndex], 0.9f, 0.1f);
 	}
 
 	public void randomIdle() {
-		//int[] idleList = { 40 };  Luna
-		int[] idleList = { 36 };
+		int[] idleList;
+		switch (character.name)
+		{
+			case Global.David:
+				idleList = Global.DavidIdleGestures;
+				break;
+			case Global.Luna:
+				idleList = Global.LunaIdleGestures;
+				break;
+			default:
+				idleList = null;
+				break;
+		}
+
 		System.Random rnd = new System.Random();
 		int idleIndex = rnd.Next(0, idleList.Length);
 		changePose(idleList[idleIndex], 0.9f, 0.15f);
@@ -122,14 +149,14 @@ public class MasterControl : MonoBehaviour
 
 	public void setFacialExpression(string emotion, int strength=100) {
 		Debug.Assert(strength >= 0 && strength <= 100, "strength should be in range 0 to 100");
-		if (emotion == "bored")
-			facialControl.setBored(strength);
-		else if (emotion == "angry")
+		if (emotion == "Angry")
 			facialControl.setAngry(strength);
-		else if (emotion == "happy")
-			facialControl.setHappy(strength);
-		else if (emotion == "content")
+		else if (emotion == "Bored")
+			facialControl.setBored(strength);
+		else if (emotion == "Content")
 			facialControl.setContent(strength);
+		else if (emotion == "Happy")
+			facialControl.setHappy(strength);
 	}
 
 	public void raiseBrow()
@@ -138,31 +165,26 @@ public class MasterControl : MonoBehaviour
 	}
 
 	public void setHandShape(string side, string shape) {
-		if (side == "L") {
-			if (shape == "Relax")
-				HandLayerControl.setLeftHand(0);
-			else if (shape == "Fist")
-				HandLayerControl.setLeftHand(2);
-			else if (shape == "Palm")
-				HandLayerControl.setLeftHand(1);
-		}
+		Global.HandPose handType = Global.HandPose.Relax;
+		if (shape == "Relax")
+			handType = Global.HandPose.Relax;
+		else if (shape == "Palm")
+			handType = Global.HandPose.Palm;
+		else if (shape == "Fist")
+			handType = Global.HandPose.Fist;
+
+		if (side == "L")
+			HandLayerControl.setLeftHand((int)handType);
 		else if (side == "R")
-		{
-			if (shape == "Relax")
-				HandLayerControl.setRightHand(0);
-			else if (shape == "Fist")
-				HandLayerControl.setRightHand(2);
-			else if (shape == "Palm")
-				HandLayerControl.setRightHand(1);
-		}
+			HandLayerControl.setRightHand((int)handType);
 	}
 
 	public void characterOffset(string type, int strength) {
-		Global.BodyOffset offsetType = Global.BodyOffset.NEUTRAL;
-		if (type == "forward") offsetType = Global.BodyOffset.FORWARD;
-		else if (type == "backward") offsetType = Global.BodyOffset.BACKWARD;
-		else if (type == "inward") offsetType = Global.BodyOffset.INWARD;
-		else if (type == "outward") offsetType = Global.BodyOffset.OUTWARD;
+		Global.BodyOffset offsetType = Global.BodyOffset.Neutral;
+		if (type == "forward") offsetType = Global.BodyOffset.Forward;
+		else if (type == "backward") offsetType = Global.BodyOffset.Backward;
+		else if (type == "inward") offsetType = Global.BodyOffset.Inward;
+		else if (type == "outward") offsetType = Global.BodyOffset.Outward;
 
 		StartCoroutine(spineOffsetCtrl.spineOffset(offsetType, strength));
 		StartCoroutine(mainOffsetCtrl.bodyOffset(offsetType, strength));
@@ -175,6 +197,14 @@ public class MasterControl : MonoBehaviour
 		requester = new SignalRequester();
 		requester.message = message;
 		requester.Start();
+	}
+
+	public void changeSlide(string direction, int step)
+	{
+		if (direction == "next")
+			slideControl.NextSlide(step);
+		else if(direction == "back")
+			slideControl.PreviousSlide(step);
 	}
 
 	private void mecanimGUI()

@@ -9,7 +9,7 @@ public class BMLReader : MonoBehaviour
 	XmlDocument xml = new XmlDocument();
 	XmlNode root;
 
-	public MasterControl currentEvent;
+	private MasterControl currentEvent;
 	public TextAsset file;
 
 	float startTime;
@@ -20,6 +20,7 @@ public class BMLReader : MonoBehaviour
 	// initialize BML by reseting time, loading BML script
 	void Start()
     {
+		currentEvent = gameObject.GetComponent<MasterControl>();
 		startTime = Time.time;
 		xml.LoadXml(file.text);
 		root = xml.FirstChild;
@@ -93,6 +94,15 @@ public class BMLReader : MonoBehaviour
 		{
 			string message = root.ChildNodes.Item(action).Attributes["message"].Value;
 			currentEvent.requestSignal(message);
+		}
+
+		if (eventName == "slide")
+		{
+			string direction = root.ChildNodes.Item(action).Attributes["direction"].Value;
+			int step = 1;
+			if (root.ChildNodes.Item(action).Attributes["step"] != null)
+				step = int.Parse(root.ChildNodes.Item(action).Attributes["step"].Value);
+			currentEvent.changeSlide(direction, step);
 		}
 	}
 }

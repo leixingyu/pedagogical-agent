@@ -1,20 +1,32 @@
 <xml character="David">
-    <facial emotion="happy" start="0"/>
-    <foot status="lock" start="0"/>
-    <hand side="L" shape="Relax" start="0"/>
-    <hand side="R" shape="Relax" start="0"/>
-    <gesture pose="36" start="0" speed="1.0"/>
+  <facial emotion="happy" start="0"/>
+  <foot status="lock" start="0"/>
+  <hand side="L" shape="Relax" start="0"/>
+  <hand side="R" shape="Relax" start="0"/>
+  <gesture pose="36" start="0" speed="1.0"/>
 
-    <facial emotion="happy" strength="20" start="3"/>
+  <slide direction="next" start="2"/>
+
+  <facial emotion="happy" strength="20" start="3"/>
   
-    <request message ="checkpoint 1" start="3"/>
-  
-    <gesture pose="3" start="3" blend="0.1"/>
+  <request message ="checkpoint 1" start="3"/>
+  <gesture pose="3" start="3" blend="0.1"/>
+  <gesture pose="3" start="5" blend="0.1"/>
+  <request message ="checkpoint 2" start="5"/>
+  <request message ="checkpoint 1" start="7"/>
+  <request message ="checkpoint 1" start="9"/>
+  <request message ="checkpoint 1" start="11"/>
 
-    <gesture pose="3" start="5" blend="0.1"/>
+  <request message ="checkpoint 2" start="13"/>
+  <request message ="checkpoint 1" start="15"/>
+  <request message ="checkpoint 1" start="17"/>
+  <request message ="checkpoint 1" start="19"/>
 
-    <request message ="checkpoint 2" start="5"/>
+  <request message ="checkpoint 2" start="21"/>
+  <request message ="checkpoint 1" start="23"/>
+  <request message ="checkpoint 1" start="25"/>
+  <request message ="checkpoint 1" start="27"/>
 
-    <gesture pose="3" start="63" blend="0.1"/>
+  <gesture pose="3" start="63" blend="0.1"/>
     
 </xml>

@@ -9,11 +9,10 @@ public class SpineOffset : MonoBehaviour
 {
 	public float offset = 0.0f;
 	private string character;
-	private List<string> spineList;
 
-	//has to be public otherwise won't work
-	public List<GameObject> spineJoints; 
-	public List<float> initialRot;
+	private List<string> spineList;
+	private List<GameObject> spineJoints; 
+	private List<float> initialRot;
 
     void Start()
     {
@@ -24,7 +23,9 @@ public class SpineOffset : MonoBehaviour
 		else if (character == Global.David)
 			spineList = Global.DavidSpine;
 
-		// add spine transform to list
+		// store spine transform in list
+		spineJoints = new List<GameObject>();
+		initialRot = new List<float>();
 		foreach (string spine in spineList) {
 			GameObject spineJnt = GameObject.Find(spine);
 			Debug.Assert(spineJnt, "spine joint not found for offset" );
@@ -61,9 +62,9 @@ public class SpineOffset : MonoBehaviour
 		float previous = offset;
 		float next;
 
-		if (type == Global.BodyOffset.FORWARD)
+		if (type == Global.BodyOffset.Forward)
 			next = Setting.bodyLeanExtreme * strength / 100.0f;
-		else if (type == Global.BodyOffset.BACKWARD)
+		else if (type == Global.BodyOffset.Backward)
 			next = Setting.bodyLeanExtreme * strength / 100.0f;
 		else
 			next = 0.0f;

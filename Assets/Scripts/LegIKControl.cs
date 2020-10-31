@@ -1,11 +1,18 @@
 ﻿using UnityEngine;
+using RootMotion.FinalIK;
 
 /* Setup Foot IK control by accessing final ik foot component (pre-set)
  * Needs to be called by the global control or in other places */
 
 public class LegIKControl : MonoBehaviour
 {
-	public RootMotion.FinalIK.FullBodyBipedIK ikSystem;
+	private FullBodyBipedIK ikSystem;
+
+	private void Start()
+	{
+		ikSystem = gameObject.GetComponent<FullBodyBipedIK>();
+		footLock();
+	}
 
 	public void footLock() {
 		ikSystem.solver.leftFootEffector.positionWeight = 1.0f;

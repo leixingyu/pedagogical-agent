@@ -31,6 +31,7 @@ public class MecanimControl : MonoBehaviour {
 	public WrapMode defaultWrapMode = WrapMode.Loop;
 
 	private Animator animator;
+	private int defaultIndex = 0;
 
     private float startTime;
     private float currentTime = 0.0f;
@@ -59,9 +60,11 @@ public class MecanimControl : MonoBehaviour {
 		{
 			case Global.David:
 				controller1 = Resources.Load<RuntimeAnimatorController>(Global.DavidController);
+				defaultIndex = Global.DavidDefaultGesture;
 				break;
 			case Global.Luna:
 				controller1 = Resources.Load<RuntimeAnimatorController>(Global.LunaController);
+				defaultIndex = Global.LunaDefaultGesture;
 				break;
 			default:
 				controller1 = Resources.Load<RuntimeAnimatorController>("Controller/controller1");
@@ -80,11 +83,10 @@ public class MecanimControl : MonoBehaviour {
 	
 	void Start(){
 		BatchLoadClips();  // load all clips
-
-        startTime = Time.time;  // start recording time length
+		startTime = Time.time;  // start recording time length
 
 		if (defaultAnimation.clip == null && animations.Length > 0){
-			SetDefaultClip(animations[0].clip, "Default", animations[0].speed, animations[0].wrapMode, false);
+			SetDefaultClip(animations[defaultIndex].clip, "Default", animations[defaultIndex].speed, animations[defaultIndex].wrapMode, false);
 		}
 		
 		if (defaultAnimation.clip != null){

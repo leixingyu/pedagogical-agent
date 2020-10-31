@@ -34,14 +34,14 @@ public class MainOffset : MonoBehaviour
 		rShoulderPre = effector.leftHandOffset;
 
 		// determine the next value based on offset type and strength
-		if(type == Global.BodyOffset.BACKWARD)
+		if(type == Global.BodyOffset.Backward)
 		{
 			lHandNext = lHandBackward * strength / 100.0f;
 			rHandNext = rHandBackward * strength / 100.0f;
 			lShoulderNext = lShoulderBackward * strength / 100.0f;
 			rShoulderNext = rShoulderBackward * strength / 100.0f;
 		}
-		else if (type == Global.BodyOffset.FORWARD)
+		else if (type == Global.BodyOffset.Forward)
 		{
 			lHandNext = lHandForward * strength / 100.0f;
 			rHandNext = rHandForward * strength / 100.0f;

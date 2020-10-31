@@ -13,7 +13,8 @@ public class HandLayerControl : MonoBehaviour
 		anim = GetComponent<Animator>();
 	}
 
-	static public void setLeftHand(int index) {
+	static public void setLeftHand(int index)
+	{
 		anim.SetInteger("LHand", index);
 	}
 
