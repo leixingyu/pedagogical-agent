@@ -25,7 +25,7 @@ public class MainOffset : MonoBehaviour
 		effector = gameObject.AddComponent<BodyEffectorSetup>();
 	}
 
-	public IEnumerator bodyOffset(Global.BodyOffset type, float strength = 100.0f, int frames = Setting.bodyOffsetBlend)
+	public IEnumerator OffsetMain(Global.BodyOffset type, float strength = 100.0f, int frames = Setting.bodyOffsetBlend)
 	{
 		// store previous value
 		lHandPre = effector.leftHandOffset;
@@ -34,14 +34,14 @@ public class MainOffset : MonoBehaviour
 		rShoulderPre = effector.leftHandOffset;
 
 		// determine the next value based on offset type and strength
-		if(type == Global.BodyOffset.Backward)
+		if(type == Global.BodyOffset.BACKWARD)
 		{
 			lHandNext = lHandBackward * strength / 100.0f;
 			rHandNext = rHandBackward * strength / 100.0f;
 			lShoulderNext = lShoulderBackward * strength / 100.0f;
 			rShoulderNext = rShoulderBackward * strength / 100.0f;
 		}
-		else if (type == Global.BodyOffset.Forward)
+		else if (type == Global.BodyOffset.FORWARD)
 		{
 			lHandNext = lHandForward * strength / 100.0f;
 			rHandNext = rHandForward * strength / 100.0f;

@@ -17,11 +17,11 @@ public class SpineOffset : MonoBehaviour
     void Start()
     {
 		character = gameObject.name;
-		if (character == Global.Luna)
-			spineList = Global.LunaSpine;
+		if (character == Global.luna)
+			spineList = Global.lunaSpineObj;
 
-		else if (character == Global.David)
-			spineList = Global.DavidSpine;
+		else if (character == Global.david)
+			spineList = Global.davidSpineObj;
 
 		// store spine transform in list
 		spineJoints = new List<GameObject>();
@@ -36,7 +36,7 @@ public class SpineOffset : MonoBehaviour
 
 	void LateUpdate()
 	{
-		if(character == Global.Luna)
+		if(character == Global.luna)
 		{
 			spineJoints[0].transform.eulerAngles = new Vector3(spineJoints[0].transform.eulerAngles[0],
 															   spineJoints[0].transform.eulerAngles[1],
@@ -57,14 +57,14 @@ public class SpineOffset : MonoBehaviour
 		}
     }
 
-	public IEnumerator spineOffset(Global.BodyOffset type, float strength = 100.0f, int frames = Setting.bodyOffsetBlend)
+	public IEnumerator OffsetSpine(Global.BodyOffset type, float strength = 100.0f, int frames = Setting.bodyOffsetBlend)
 	{
 		float previous = offset;
 		float next;
 
-		if (type == Global.BodyOffset.Forward)
+		if (type == Global.BodyOffset.FORWARD)
 			next = Setting.bodyLeanExtreme * strength / 100.0f;
-		else if (type == Global.BodyOffset.Backward)
+		else if (type == Global.BodyOffset.BACKWARD)
 			next = Setting.bodyLeanExtreme * strength / 100.0f;
 		else
 			next = 0.0f;

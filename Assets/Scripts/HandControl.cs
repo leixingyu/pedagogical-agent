@@ -3,23 +3,22 @@
 /* Setup Hand control by accessing pre-set animator components
  * Needs to be called by the global control or in other places */
 
-public class HandLayerControl : MonoBehaviour
+public class HandControl : MonoBehaviour
 {
 	static Animator anim;
 
-	// Start is called before the first frame update
 	void Start()
     {
 		anim = GetComponent<Animator>();
 	}
 
-	static public void setLeftHand(int index)
+	static public void SetLeftHand(int index)
 	{
-		anim.SetInteger("LHand", index);
+		anim.SetInteger(Global.leftHandLayer, index);
 	}
 
-	static public void setRightHand(int index)
+	static public void SetRightHand(int index)
 	{
-		anim.SetInteger("RHand", index);
+		anim.SetInteger(Global.rightHandLayer, index);
 	}
 }

@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Luna.unity
     guid: ae3e4fa06fa12b84e8be3d98ba3ea2ce
-  - enabled: 1
-    path: Assets/Scenes/Dana.unity
-    guid: 3d0b01de01a561940ad7593616b719d7
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}

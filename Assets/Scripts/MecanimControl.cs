@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-/* Setup Pose transition for character animation
- * Needs to be called by the global control or in other places */
-
 [System.Serializable]
 public class AnimationData {
 	public AnimationClip clip;
@@ -58,13 +55,13 @@ public class MecanimControl : MonoBehaviour {
 
 		switch (animator.name)
 		{
-			case Global.David:
-				controller1 = Resources.Load<RuntimeAnimatorController>(Global.DavidController);
-				defaultIndex = Global.DavidDefaultGesture;
+			case Global.david:
+				controller1 = Resources.Load<RuntimeAnimatorController>(Global.davidController);
+				defaultIndex = Global.davidDefaultGesture;
 				break;
-			case Global.Luna:
-				controller1 = Resources.Load<RuntimeAnimatorController>(Global.LunaController);
-				defaultIndex = Global.LunaDefaultGesture;
+			case Global.luna:
+				controller1 = Resources.Load<RuntimeAnimatorController>(Global.lunaController);
+				defaultIndex = Global.lunaDefaultGesture;
 				break;
 			default:
 				controller1 = Resources.Load<RuntimeAnimatorController>("Controller/controller1");
@@ -186,11 +183,11 @@ public class MecanimControl : MonoBehaviour {
 		string filePath = "NULL";
 		switch (animator.name)
 		{
-			case "David_defined":
-				filePath = "David_Clips";
+			case Global.david:
+				filePath = Global.davidAnim;
 				break;
-			case "Luna_defined":
-				filePath = "Luna_Clips";
+			case Global.luna:
+				filePath = Global.lunaAnim;
 				break;
 		}
 

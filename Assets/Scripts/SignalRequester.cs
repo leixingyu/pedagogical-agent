@@ -13,7 +13,7 @@ public class SignalRequester : RunAbleThread
         {
             client.Connect("tcp://localhost:5555");
 
-			string signal = "null";
+			string signal = "None";
 			bool gotMessage = false;
 
 			Debug.Log("----Sending Signal----");
@@ -28,7 +28,7 @@ public class SignalRequester : RunAbleThread
 			if (gotMessage)
 			{
 				Debug.Log("----Recived Signal: " + signal);
-				ViewerEmotion.currentEmotion = signal;
+				EmotionInput.currentEmotion = signal;
 				Running = false;
 			}
         }

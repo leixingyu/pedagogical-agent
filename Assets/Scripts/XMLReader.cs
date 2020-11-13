@@ -4,7 +4,7 @@ using System.Xml;
 /* Takes a BML and triggers series of event (controls)
  * Calls Global control functionality */
 
-public class BMLReader : MonoBehaviour
+public class XMLReader : MonoBehaviour
 {
 	XmlDocument xml = new XmlDocument();
 	XmlNode root;
@@ -46,63 +46,118 @@ public class BMLReader : MonoBehaviour
 	private void TriggerEvent(string eventName)
 	{
 		if (eventName == "gesture") {
-			int poseIndex = int.Parse(root.ChildNodes.Item(action).Attributes["pose"].Value);
-
 			float speed = 1.0f, blend = 0.15f;
-			string type = "neutral";
 			int strength = 100;
+			string type = "neutral";
 
+			// Required
+			int poseIndex = int.Parse(root.ChildNodes.Item(action).Attributes["pose"].Value);
+			// Optional
 			if(root.ChildNodes.Item(action).Attributes["speed"] != null)
 				speed = float.Parse(root.ChildNodes.Item(action).Attributes["speed"].Value);
 			if (root.ChildNodes.Item(action).Attributes["blend"] != null)
 				blend = float.Parse(root.ChildNodes.Item(action).Attributes["blend"].Value);
-			currentEvent.changePose(poseIndex, speed, blend);
-
 			if (root.ChildNodes.Item(action).Attributes["offset"] != null)
 				type = root.ChildNodes.Item(action).Attributes["offset"].Value;
 			if (root.ChildNodes.Item(action).Attributes["strength"] != null)
-				blend = int.Parse(root.ChildNodes.Item(action).Attributes["blend"].Value);
-			currentEvent.characterOffset(type, strength);
+				strength = int.Parse(root.ChildNodes.Item(action).Attributes["strength"].Value);
+
+			//
+			Global.BodyOffset offsetType = Global.BodyOffset.NEUTRAL;
+			if (type == "forward")			offsetType = Global.BodyOffset.FORWARD;
+			else if (type == "backward")	offsetType = Global.BodyOffset.BACKWARD;
+			else if (type == "inward")		offsetType = Global.BodyOffset.INWARD;
+			else if (type == "outward")		offsetType = Global.BodyOffset.OUTWARD;
+
+			currentEvent.ChangePose(poseIndex, speed, blend);
+			currentEvent.CharacterOffset(offsetType, strength);
 		}
 
 		if (eventName == "facial")
 		{
 			int strength = 100;
+
+			// Required
 			string emotion = root.ChildNodes.Item(action).Attributes["emotion"].Value;
+			// Optional
 			if(root.ChildNodes.Item(action).Attributes["strength"] != null)
 				strength = int.Parse(root.ChildNodes.Item(action).Attributes["strength"].Value);
-			currentEvent.setFacialExpression(emotion, strength);
+
+			//
+			Global.Emotion emotionType = Global.Emotion.CONTENT;
+			if (emotion == "angry")
+				emotionType = Global.Emotion.ANGRY;
+			else if (emotion == "bored")
+				emotionType = Global.Emotion.BORED;
+			else if (emotion == "content")
+				emotionType = Global.Emotion.CONTENT;
+			else if (emotion == "happy")
+				emotionType = Global.Emotion.HAPPY;
+
+			currentEvent.SetExpression(emotionType, strength);
 		}
 
 		if (eventName == "hand")
 		{
+			// Required
 			string side = root.ChildNodes.Item(action).Attributes["side"].Value;
 			string shape = root.ChildNodes.Item(action).Attributes["shape"].Value;
-			currentEvent.setHandShape(side, shape);
+
+			//
+			Global.Side sideType = Global.Side.BOTH;
+			if (side == "L")
+				sideType = Global.Side.LEFT;
+			else if (side == "R")
+				sideType = Global.Side.RIGHT;
+
+			Global.HandPose handType = Global.HandPose.RELAX;
+			if (shape == "relax")
+				handType = Global.HandPose.RELAX;
+			else if (shape == "palm")
+				handType = Global.HandPose.PALM;
+			else if (shape == "fist")
+				handType = Global.HandPose.FIST;
+
+			currentEvent.SetHandShape(sideType, handType);
 		}
 
 		if (eventName == "foot")
 		{
+			// Required
 			string status = root.ChildNodes.Item(action).Attributes["status"].Value;
+			//
 			if (status == "lock")
-				currentEvent.footLock(true);
+				currentEvent.LockFoot(true);
 			else
-				currentEvent.footLock(false);
+				currentEvent.LockFoot(false);
 		}
 
 		if (eventName == "request")
 		{
-			string message = root.ChildNodes.Item(action).Attributes["message"].Value;
-			currentEvent.requestSignal(message);
+			string message = "";
+			// Optional
+			if (root.ChildNodes.Item(action).Attributes["message"] != null)
+				message = root.ChildNodes.Item(action).Attributes["message"].Value;
+
+			currentEvent.RequestSignal(message);
 		}
 
 		if (eventName == "slide")
 		{
-			string direction = root.ChildNodes.Item(action).Attributes["direction"].Value;
 			int step = 1;
+			// Required
+			string direction = root.ChildNodes.Item(action).Attributes["direction"].Value;
+			// Optional
 			if (root.ChildNodes.Item(action).Attributes["step"] != null)
 				step = int.Parse(root.ChildNodes.Item(action).Attributes["step"].Value);
-			currentEvent.changeSlide(direction, step);
+
+			//
+			Global.Direction directionType = Global.Direction.NEXT;
+			if (direction == "back")
+				directionType = Global.Direction.BACK;
+
+			currentEvent.ChangeSlide(directionType, step);
+			currentEvent.ChangeAudio(directionType, step);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System;
+using UnityEngine.Audio;
 
 /* Master (Main) control wrapper of character behavior: 
  *		[offset ctrl] + [mecanim pose ctrl] + [legIK ctrl] + [facial expression ctrl] + [hand shape ctrl]
@@ -9,248 +10,313 @@ using System;
 
 public class MasterControl : MonoBehaviour
 {
-	public bool Interface = false;
+	GameObject character;       // assigned character
+	MainOffset mainOffsetCtrl;
+	SpineOffset spineOffsetCtrl;
+	MecanimControl mecanimControl;
+	ExpressionControl facialControl;
+	SignalRequester requester;
 
-	private GameObject character;       // assigned character
-	private MainOffset mainOffsetCtrl;
-	private SpineOffset spineOffsetCtrl;
-	private MecanimControl mecanimControl;
-	private LegIKControl legControl;
-	private FacialBlendShape facialControl;
-	private SignalRequester requester;
-	private ChangeSlide slideControl;
+	System.Random rnd;
+	AudioMixerGroup pitchShifter;
+
+	int[] beatList, idleList;
+	bool emitorFlag = false;
+	bool ikStatus = false;
+	//int strength = 100;
+	bool debug = false;
 
 	float animSpeed = 1.0f;
 	float currentRotation = 0.0f;
 	float blendDuration = 0.15f;
-	bool emitorFlag = false;
-	bool ikStatus = false;
-	int strength = 100;
 
 	void Start()
     {
 		character = GameObject.FindGameObjectWithTag("Player");
+		CharacterInitialize();
+		rnd = new System.Random();
+		pitchShifter = Resources.Load<AudioMixerGroup>(Global.mixer);
 
-		// Simple components added during runtime
+		// Components added during runtime
 		mecanimControl = character.AddComponent<MecanimControl>();
-		legControl = character.AddComponent<LegIKControl>();
+		facialControl = character.AddComponent<ExpressionControl>();
 		mainOffsetCtrl = character.AddComponent<MainOffset>();
 		spineOffsetCtrl = character.AddComponent<SpineOffset>();
-		character.AddComponent<HandLayerControl>();		// static function, called directly
-		facialControl = character.AddComponent<FacialBlendShape>();
-		slideControl = gameObject.AddComponent<ChangeSlide>();
+
+		// Static method can be called doesn't have StartCoroutine()
+		character.AddComponent<HandControl>();
+		character.AddComponent<FootControl>();
+		gameObject.AddComponent<SlideControl>();
+		gameObject.AddComponent<AudioControl>();
 	}
 
-	void OnGUI()
-	{
-		if (Interface)
-		{	
-			// mecanim control
-			mecanimGUI();
+	/*---------------------------------------------------------------*/
 
-			// ik lock
-			if (GUI.Button(new Rect(500f, 20f, 100f, 20f), "Foot IK")){
-				footLock(ikStatus);
-				ikStatus = !ikStatus;
-			}
-
-			// facial expression preset
-			strength = (int)GUI.HorizontalSlider(new Rect(800, 0, 100, 20), strength, 0f, 100f);
-			if (GUI.Button(new Rect(800, 20, 100, 20), "Angry"))
-				setFacialExpression("Angry");
-			if (GUI.Button(new Rect(800, 40, 100, 20), "Bored"))
-				setFacialExpression("Bored");
-			if (GUI.Button(new Rect(800, 60, 100, 20), "Content"))
-				setFacialExpression("Content");
-			if (GUI.Button(new Rect(800, 80, 100, 20), "Happy"))
-				setFacialExpression("Happy", strength);
-
-			// hand shape
-			Array handPose = Enum.GetValues(typeof(Global.HandPose));
-			for (int i = 0; i < Setting.handShape; i++)
-			{
-				if (GUI.Button(new Rect(250, 20 + 40 * i, 100, 20), handPose.GetValue(Convert.ToInt32(i)).ToString()))
-					setHandShape("L", handPose.GetValue(Convert.ToInt32(i)).ToString());
-				if (GUI.Button(new Rect(350, 20 + 40 * i, 100, 20), handPose.GetValue(Convert.ToInt32(i)).ToString()))
-					setHandShape("R", handPose.GetValue(Convert.ToInt32(i)).ToString());
-			}
-		}
-	}
-
-	private void OnDestory()
-	{
-		requester.Stop();
-	}
-
-	// avoid rapid transitioning
-	IEnumerator emitor()
+	IEnumerator Emitor()
 	{
 		emitorFlag = true;
-		yield return new WaitForSeconds(Setting.emitTime);
+		yield return new WaitForSeconds(Setting.emitTime);   // avoid rapid transitioning
 		emitorFlag = false;
 	}
 
-	public void changePose(int poseIndex, float speed=1.0f, float blend=0.15f)
+	private void CharacterInitialize()
 	{
-		if (!emitorFlag) { 
-			mecanimControl.Play(mecanimControl.animations[poseIndex], blend);
-			mecanimControl.SetSpeed(speed);
-			StartCoroutine(emitor());  // avoid frequent transition
-		}
-	}
-
-	public void randomBeat()
-	{
-		int[] beatList;
 		switch (character.name)
 		{
-			case Global.David:
-				beatList = Global.DavidBeatGestures;
+			case Global.david:
+				beatList = Global.davidBeatGestures;
+				idleList = Global.davidIdleGestures;
 				break;
-			case Global.Luna:
-				beatList = Global.LunaBeatGestures;
+			case Global.luna:
+				beatList = Global.lunaBeatGestures;
+				idleList = Global.lunaIdleGestures;
 				break;
 			default:
 				beatList = null;
+				idleList = null;
 				break;
 		}
-
-		System.Random rnd = new System.Random();
-		int beatIndex = rnd.Next(0, beatList.Length);
-		changePose(beatList[beatIndex], 0.9f, 0.1f);
 	}
 
-	public void randomIdle() {
-		int[] idleList;
+	public void ChangeIdle(Global.Emotion emotion)
+	{
 		switch (character.name)
 		{
-			case Global.David:
-				idleList = Global.DavidIdleGestures;
+			case Global.david:
+				if (emotion == Global.Emotion.ANGRY)		idleList = Global.davidAngryGestures;
+				else if (emotion == Global.Emotion.BORED)   idleList = Global.davidBoredGestures;
+				else if (emotion == Global.Emotion.CONTENT) idleList = Global.davidContentGestures;
+				else if (emotion == Global.Emotion.HAPPY)   idleList = Global.davidHappyGestures;
 				break;
-			case Global.Luna:
-				idleList = Global.LunaIdleGestures;
+			case Global.luna:
+				if (emotion == Global.Emotion.ANGRY)		idleList = Global.lunaAngryGestures;
+				else if (emotion == Global.Emotion.BORED)   idleList = Global.lunaBoredGestures;
+				else if (emotion == Global.Emotion.CONTENT) idleList = Global.lunaContentGestures;
+				else if (emotion == Global.Emotion.HAPPY)   idleList = Global.lunaHappyGestures;
 				break;
 			default:
 				idleList = null;
 				break;
 		}
+	}
 
-		System.Random rnd = new System.Random();
+	public void RandomBeat()
+	{
+		int beatIndex = rnd.Next(0, beatList.Length);
+		ChangePose(beatList[beatIndex], 0.9f, 0.1f);
+	}
+
+	public void RandomIdle()
+	{
 		int idleIndex = rnd.Next(0, idleList.Length);
-		changePose(idleList[idleIndex], 0.9f, 0.15f);
+		ChangePose(idleList[idleIndex], 0.9f, 0.15f);
 	}
 
-	public void footLock(bool status) {
+	public void RaiseBrow()
+	{
+		StartCoroutine(facialControl.BrowRaise());
+	}
+
+	/*---------------------------------------------------------------*/
+
+	public void ChangePose(int poseIndex, float speed = 1.0f, float blend = 0.15f)
+	{
+		if (!emitorFlag)
+		{
+			mecanimControl.Play(mecanimControl.animations[poseIndex], blend);
+			mecanimControl.SetSpeed(speed);
+			StartCoroutine(Emitor());  // avoid frequent transition
+		}
+	}
+
+	public void LockFoot(bool status) {
 		if (status)
-			legControl.footLock();
+			FootControl.LockFoot();
 		else
-			legControl.footUnlock();
+			FootControl.UnlockFoot();
 	}
 
-	public void setFacialExpression(string emotion, int strength=100) {
+	public void SetExpression(Global.Emotion type, int strength = 100) {
 		Debug.Assert(strength >= 0 && strength <= 100, "strength should be in range 0 to 100");
-		if (emotion == "Angry")
-			facialControl.setAngry(strength);
-		else if (emotion == "Bored")
-			facialControl.setBored(strength);
-		else if (emotion == "Content")
-			facialControl.setContent(strength);
-		else if (emotion == "Happy")
-			facialControl.setHappy(strength);
+		if (type == Global.Emotion.ANGRY)
+			facialControl.SetAngry(strength);
+		else if (type == Global.Emotion.BORED)
+			facialControl.SetBored(strength);
+		else if (type == Global.Emotion.CONTENT)
+			facialControl.SetContent(strength);
+		else if (type == Global.Emotion.HAPPY)
+			facialControl.SetHappy(strength);
 	}
 
-	public void raiseBrow()
+	public void SetHandShape(Global.Side side, Global.HandPose handPose) {
+		if (side == Global.Side.LEFT)
+			HandControl.SetLeftHand((int)handPose);
+		else if (side == Global.Side.RIGHT)
+			HandControl.SetRightHand((int)handPose);
+	}
+
+	public void CharacterOffset(Global.BodyOffset type, int strength) {
+		StartCoroutine(spineOffsetCtrl.OffsetSpine(type, strength));
+		StartCoroutine(mainOffsetCtrl.OffsetMain(type, strength));
+	}
+
+	/*---------------------------------------------------------------*/
+
+	public void RequestSignal(string message)
 	{
-		StartCoroutine(facialControl.browRaise());
-	}
-
-	public void setHandShape(string side, string shape) {
-		Global.HandPose handType = Global.HandPose.Relax;
-		if (shape == "Relax")
-			handType = Global.HandPose.Relax;
-		else if (shape == "Palm")
-			handType = Global.HandPose.Palm;
-		else if (shape == "Fist")
-			handType = Global.HandPose.Fist;
-
-		if (side == "L")
-			HandLayerControl.setLeftHand((int)handType);
-		else if (side == "R")
-			HandLayerControl.setRightHand((int)handType);
-	}
-
-	public void characterOffset(string type, int strength) {
-		Global.BodyOffset offsetType = Global.BodyOffset.Neutral;
-		if (type == "forward") offsetType = Global.BodyOffset.Forward;
-		else if (type == "backward") offsetType = Global.BodyOffset.Backward;
-		else if (type == "inward") offsetType = Global.BodyOffset.Inward;
-		else if (type == "outward") offsetType = Global.BodyOffset.Outward;
-
-		StartCoroutine(spineOffsetCtrl.spineOffset(offsetType, strength));
-		StartCoroutine(mainOffsetCtrl.bodyOffset(offsetType, strength));
-	}
-
-	public void requestSignal(string message)
-	{
-		ViewerEmotion.lastEmotion = ViewerEmotion.currentEmotion;
-		ViewerEmotion.reset = true;
+		EmotionInput.lastEmotion = EmotionInput.currentEmotion;
+		EmotionInput.reset = true;
 		requester = new SignalRequester();
 		requester.message = message;
 		requester.Start();
 	}
 
-	public void changeSlide(string direction, int step)
+	void OnDestory()
 	{
-		if (direction == "next")
-			slideControl.NextSlide(step);
-		else if(direction == "back")
-			slideControl.PreviousSlide(step);
+		requester.Stop();
 	}
 
-	private void mecanimGUI()
+	/*---------------------------------------------------------------*/
+
+	public void ChangeSlide(Global.Direction direction, int step = 1)
 	{
-		GUILayout.BeginVertical();
+		if (direction == Global.Direction.NEXT)
+			SlideControl.NextSlide(step);
+		else if(direction == Global.Direction.BACK)
+			SlideControl.PreviousSlide(step);
+	}
 
-		GUILayout.Label("Speed (" + animSpeed.ToString("0.00") + ")");
-		animSpeed = GUILayout.HorizontalSlider(animSpeed, 0.0f, 2.0f);
-		mecanimControl.SetSpeed(animSpeed);
+	public void ChangeAudio(Global.Direction direction, int step = 1)
+	{
+		if (direction == Global.Direction.NEXT)
+			AudioControl.NextAudio(step);
+		else if (direction == Global.Direction.BACK)
+			AudioControl.PreviousAudio(step);
+	}
 
-		GUILayout.Label("Rotation (" + currentRotation.ToString("000") + ")");
-		currentRotation = GUILayout.HorizontalSlider(currentRotation, 0.0f, 360.0f);
-		character.transform.localEulerAngles = new Vector3(0.0f, currentRotation, 0.0f);
+	/*---------------------------------------------------------------*/
 
-		GUILayout.Label("Blending (" + blendDuration.ToString("0.00") + ")");
-		blendDuration = GUILayout.HorizontalSlider(blendDuration, 0.0f, 1.0f);
-		mecanimControl.defaultTransitionDuration = blendDuration;
-
-		GUILayout.Space(10);
-
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-
-		int index = 0;
-		foreach (AnimationData animationData in mecanimControl.animations)
+	public void MirrorEmotion(string emotion)
+	{
+		if (emotion == "u-a")
 		{
-			GUIStyle style = new GUIStyle(GUI.skin.button);
-			style.fixedHeight = 20;
-			style.fixedWidth = 40;
-			if (GUILayout.Button(animationData.clipName, style))
-			{
-				if (index < mecanimControl.animations.Length)
-					changePose(index);
+			SetExpression(Global.Emotion.ANGRY);
 
-				else print("index out of range");
-			}
-			index++;
-			GUILayout.Space(5);
-			if (index % 10 == 0)
+			ChangeIdle(Global.Emotion.ANGRY);
+			RandomIdle();
+			pitchShifter.audioMixer.SetFloat("pitchblend", 0.9f);
+		}
+		else if (emotion == "u-i")
+		{
+			SetExpression(Global.Emotion.BORED);
+
+			ChangeIdle(Global.Emotion.BORED);
+			RandomIdle();
+			pitchShifter.audioMixer.SetFloat("pitchblend", 0.94f);
+		}
+		else if (emotion == "p-i")
+		{
+			SetExpression(Global.Emotion.CONTENT);
+
+			ChangeIdle(Global.Emotion.CONTENT);
+			RandomIdle();
+		}
+		else if (emotion == "p-a")
+		{
+			SetExpression(Global.Emotion.HAPPY);
+
+			ChangeIdle(Global.Emotion.HAPPY);
+			RandomIdle();
+			pitchShifter.audioMixer.SetFloat("pitchblend", 1.03f);
+		}
+		else
+		{
+			print("No Emotion/Face Detected");
+		}
+	}
+
+	public void RevertDebug()
+	{
+		debug = !debug;
+	}
+
+	void OnGUI()
+	{
+		float width = 100.0f, height = 20.0f, hGap = 20.0f, vGap = 10.0f;
+		int row = 10, column = 5;
+
+		if (debug)
+		{
+			int clipCount = mecanimControl.animations.GetLength(0);
+
+			GUIStyle myStyle = new GUIStyle("box");
+			myStyle.fontSize = 14;
+
+			GUI.Box(new Rect(0, 0, column * width + (column + 1) * hGap, Screen.height), "", myStyle);
+
+			// Facial Expression
+			//strength = (int)GUI.HorizontalSlider(new Rect(800, 0, 100, 20), strength, 0f, 100f);
+
+			if (GUI.Button(new Rect(hGap, height + vGap, width, 20), "Angry"))
 			{
-				GUILayout.EndVertical();
-				GUILayout.BeginVertical();
+				//SetExpression("angry");
+				MirrorEmotion("u-a");
+			}
+
+			if (GUI.Button(new Rect(hGap, 2 * (height + vGap), width, 20), "Bored"))
+			{
+				//SetExpression("bored");
+				MirrorEmotion("u-i");
+			}
+
+			if (GUI.Button(new Rect(hGap, 3 * (height + vGap), width, 20), "Content"))
+			{
+				//SetExpression("content");
+				MirrorEmotion("p-i");
+			}
+
+			if (GUI.Button(new Rect(hGap, 4 * (height + vGap), width, 20), "Happy"))
+			{
+				//SetExpression("happy", strength);
+				MirrorEmotion("p-a");
+			}
+
+
+			// Hand shape
+			Array handPose = Enum.GetValues(typeof(Global.HandPose));
+			for (int i = 0; i < (int)Global.HandPose.MAX; i++)
+			{
+				if (GUI.Button(new Rect(hGap + (width + hGap) * 2, (i + 1) * (height + vGap), width, 20), handPose.GetValue(Convert.ToInt32(i)).ToString()))
+					SetHandShape(Global.Side.LEFT, (Global.HandPose)i);
+				if (GUI.Button(new Rect(hGap + (width + hGap) * 3, (i + 1) * (height + vGap), width, 20), handPose.GetValue(Convert.ToInt32(i)).ToString()))
+					SetHandShape(Global.Side.RIGHT, (Global.HandPose)i);
+			}
+
+			// IK foot lock
+			if (GUI.Button(new Rect(hGap + width + hGap, height + vGap, 100f, 20f), "Foot IK"))
+			{
+				LockFoot(ikStatus);
+				ikStatus = !ikStatus;
+			}
+
+			// MECANIM
+			GUI.Label(new Rect(hGap, 5 * (height + vGap), 100, height), "Speed (" + animSpeed.ToString("0.00") + ")");
+			animSpeed = GUI.HorizontalSlider(new Rect(hGap + 100, 5 * (height + vGap), 200, height), animSpeed, 0.0f, 2.0f);
+			mecanimControl.SetSpeed(animSpeed);
+
+			GUI.Label(new Rect(hGap, 6 * (height + vGap), 100, height), "Rotation (" + currentRotation.ToString("0.00") + ")");
+			currentRotation = GUI.HorizontalSlider(new Rect(hGap + 100, 6 * (height + vGap), 200, height), currentRotation, 0.0f, 360.0f);
+			character.transform.localEulerAngles = new Vector3(0.0f, currentRotation, 0.0f);
+
+			GUI.Label(new Rect(hGap, 7 * (height + vGap), 100, height), "Blending (" + blendDuration.ToString("0.00") + ")");
+			blendDuration = GUI.HorizontalSlider(new Rect(hGap + 100, 7 * (height + vGap), 200, height), blendDuration, 0.05f, 0.2f);
+			mecanimControl.defaultTransitionDuration = blendDuration;
+
+			for (int i = 0; i < clipCount; i++)
+			{
+				if (GUI.Button(new Rect(i / row * (width + hGap) + hGap, (i % row + 8) * (height + vGap), width, height), mecanimControl.animations[i].clipName))
+					mecanimControl.Play(mecanimControl.animations[i], false);
 			}
 		}
-
-		GUILayout.EndHorizontal();
-		GUILayout.EndVertical();
 	}
 }

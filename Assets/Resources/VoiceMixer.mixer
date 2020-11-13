@@ -15,7 +15,9 @@ AudioMixerController:
   m_SuspendThreshold: -80
   m_EnableSuspend: 1
   m_UpdateMode: 0
-  m_ExposedParameters: []
+  m_ExposedParameters:
+  - guid: 73936164db6a93340a53075b0bff5a0f
+    name: pitchblend
   m_AudioMixerGroupViews:
   - guids:
     - f41c29b11cdc16e4a82bbc100b5262ea
@@ -64,7 +66,20 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: d268f2ecf2c227245b87ace3a82b0343
-  m_FloatValues: {}
+  m_FloatValues:
+    d2f6bb21b13391d4fbc935a9aa934e13: 390
+    2d998403207a7e740bb4fb2b606a3a87: 0.2231
+    daca4b2322f1f7244a3acb7ef1e7639d: -10000
+    73936164db6a93340a53075b0bff5a0f: 1
+    030e4b842abfdbf489d26305d0441060: 9.6
+    7066a1e42d967fe4aa6955b5bbdcbf0c: 16.2
+    7ef12d758ee9b9449ad98f5954d2367a: -9085
+    2d30501971b355041b649e7ba46d7bca: 1.6
+    3dcddabae546d1049ac3e3b282d6728f: -7692
+    87ae115b188c86f4f9402246c0c43866: 0
+    b8b5b87ea607b3c499e5f3237bd4973e: 0.1
+    9e7e0eef9c1ec1d48810209caf858bc0: 0
+    6c2ea1ff321f19143b618b72c2a238f1: 1
   m_TransitionOverrides: {}
 --- !u!244 &244375788010735666
 AudioMixerEffectController:

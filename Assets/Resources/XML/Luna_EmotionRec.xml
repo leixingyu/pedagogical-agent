@@ -1,0 +1,17 @@
+<xml character="Luna">
+  
+  <facial emotion="content" start="0"/>
+    
+  <request message="slide no.2"  start="40.4"/>
+  <slide direction="next" start="40.4"/>
+    
+  <request message="slide no.3" start="49.2"/>
+  <slide direction="next" start="49.2"/>
+    
+  <request message="slide no.4" start="67.5"/>
+  <slide direction="next" start="67.5"/>
+  
+  <request message="slide no.5" start="82.8"/>
+  <slide direction="next" start="82.8"/>
+  
+</xml>
