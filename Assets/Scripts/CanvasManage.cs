@@ -5,21 +5,25 @@ using UnityEngine.UI;
 public class CanvasManage : MonoBehaviour
 {
 	MasterControl currentEvent;
+	AudioSource audioSource;
 
 	public Camera mainCam;
 	public Slider mainSlider;
 	public Button lunaBtn;
 	public Button davidBtn;
-	Button debugBtn, nextBtn, preBtn, reloadBtn;
+	Button debugBtn, nextBtn, preBtn, reloadBtn, pausePlayBtn;
 	Toggle XMLTog, BeatTog, EmotionTog;
 
 	Vector3 closeView = new Vector3(-0.149f, 0.96f, 0.813f);
 	Vector3 midView = new Vector3(-0.31f, 0.75f, 1.97f);
 	Vector3 fullView = new Vector3(-0.31f, 0.584f, 2.804f);
 
+	bool pause = false;
+
 	void Start()
 	{
 		currentEvent = gameObject.GetComponent<MasterControl>();
+		audioSource = gameObject.GetComponent<AudioSource>();
 
 		mainCam.transform.position = midView;
 		mainSlider.value = (float)Global.CameraView.MID;
@@ -39,6 +43,9 @@ public class CanvasManage : MonoBehaviour
 
 		reloadBtn = GameObject.Find("Canvas/Reload").GetComponent<Button>();
 		reloadBtn.onClick.AddListener(delegate { ReloadScene(); });
+
+		pausePlayBtn = GameObject.Find("Canvas/PausePlay").GetComponent<Button>();
+		pausePlayBtn.onClick.AddListener(delegate { PausePlayModifier(); });
 
 		XMLTog = GameObject.Find("Canvas/XMLReader").GetComponent<Toggle>();
 		XMLTog.onValueChanged.AddListener(delegate { ToggleXMLReader(); });
@@ -95,6 +102,23 @@ public class CanvasManage : MonoBehaviour
 	{
 		Scene scene = SceneManager.GetActiveScene();
 		SceneManager.LoadScene(scene.name);
+	}
+
+	void PausePlayModifier()
+	{
+		if (pause)
+		{
+			Time.timeScale = 1;
+			audioSource.Play();
+		}
+
+		else
+		{
+			Time.timeScale = 0;
+			audioSource.Pause();
+		}
+			
+		pause = !pause;
 	}
 
 	void ToggleXMLReader()

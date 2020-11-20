@@ -1,0 +1,17 @@
+<xml character="David">
+  
+  <facial emotion="content" start="0"/>
+    
+  <request message="slide no.2"  start="35"/>
+  <slide direction="next" start="35"/>
+    
+  <request message="slide no.3" start="44"/>
+  <slide direction="next" start="44"/>
+    
+  <request message="slide no.4" start="61"/>
+  <slide direction="next" start="61"/>
+  
+  <request message="slide no.5" start="74"/>
+  <slide direction="next" start="74"/>
+  
+</xml>
