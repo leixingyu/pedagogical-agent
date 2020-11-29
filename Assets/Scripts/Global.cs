@@ -36,12 +36,12 @@ public class Global
 	public static string lunaController  = "Controller/Luna_controller";
 	public static string davidController = "Controller/David_controller";
 
-	// slide texture location
-	public static string slideTexture = "Slide";
-
 	// subsequence audio location
 	public static string lunaAudio = "Audio/Luna";
 	public static string davidAudio = "Audio/David";
+
+	// slide texture location
+	public static string slideTexture = "Slide";
 
 	// audio mixer
 	public static string mixer = "VoiceMixer";
@@ -135,5 +135,9 @@ public class Setting
 	public const int handShape = 3;  // current number of hand shape configured
 
 	public const int facialBlend = 12;  // frames to blend to next facial expression
-	public const int browBlend = 6;		// frames to raise eye brows
+	public const int browBlend = 6;     // frames to raise eye brows
+
+	// emotion recognition checking
+	public const float timeInterval = 2.0f;
+	public const int maxQueueSize = 5;
 }

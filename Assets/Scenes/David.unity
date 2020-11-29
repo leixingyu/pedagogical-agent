@@ -5760,7 +5760,7 @@ MonoBehaviour:
   inspStateFoldoutHeadProps: 1
   inspStateFoldoutAnimBones: 0
   inspStateFoldoutEyes: 1
-  inspStateFoldoutEyeProps: 0
+  inspStateFoldoutEyeProps: 1
   inspStateFoldoutEyelids: 0
   inspStateFoldoutEyelidBlinkProps: 1
   inspStateFoldoutEyelidTrackProps: 1
@@ -6635,7 +6635,7 @@ MonoBehaviour:
         textures: []
         materialRenderer: {fileID: 0}
         materials: []
-      inspFoldout: 0
+      inspFoldout: 1
       previewDisplayMode: 0
       collectionExpand: 0
     trigger: 0.05
@@ -6804,9 +6804,9 @@ MonoBehaviour:
   useEasingOverride: 0
   globalEasing: 4
   configReady: 1
-  inspStateFoldoutProcessing: 1
+  inspStateFoldoutProcessing: 0
   inspStateFoldoutSettings: 0
-  inspStateFoldoutVisemes: 0
+  inspStateFoldoutVisemes: 1
   inspCollectionDisplayMode: 1
   inspAnalysisDisplay: 0
   inspOverrideSecondaryMix: 0
@@ -8917,9 +8917,10 @@ AudioSource:
   m_GameObject: {fileID: 1331684421}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: fb8847ad1fcdfa6489804a4f73548e74, type: 3}
-  m_PlayOnAwake: 1
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 4737ddfa57fb48b4092a668ceec24272,
+    type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
   m_Volume: 0.481
   m_Pitch: 1
   Loop: 0
@@ -9037,8 +9038,8 @@ MonoBehaviour:
   onBeat:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: RaiseBrow
+      - m_Target: {fileID: 1331684426}
+        m_MethodName: RandomBeat
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9048,8 +9049,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: RandomBeat
+      - m_Target: {fileID: 1331684426}
+        m_MethodName: RaiseBrow
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9064,7 +9065,7 @@ MonoBehaviour:
   onIdle:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1331684426}
         m_MethodName: RandomIdle
         m_Mode: 1
         m_Arguments:

@@ -3,11 +3,6 @@ using UnityEngine;
 using System;
 using UnityEngine.Audio;
 
-/* Master (Main) control wrapper of character behavior: 
- *		[offset ctrl] + [mecanim pose ctrl] + [legIK ctrl] + [facial expression ctrl] + [hand shape ctrl]
- * Create GUI and allow control
- * Allow BML reader to acess all the control */
-
 public class MasterControl : MonoBehaviour
 {
 	GameObject character;       // assigned character
@@ -15,7 +10,6 @@ public class MasterControl : MonoBehaviour
 	SpineOffset spineOffsetCtrl;
 	MecanimControl mecanimControl;
 	ExpressionControl facialControl;
-	SignalRequester requester;
 
 	System.Random rnd;
 	AudioMixerGroup pitchShifter;
@@ -162,18 +156,11 @@ public class MasterControl : MonoBehaviour
 
 	/*---------------------------------------------------------------*/
 
-	public void RequestSignal(string message)
+	public void CheckSignal()
 	{
-		EmotionInput.lastEmotion = EmotionInput.currentEmotion;
+		EmotionInput.currentEmotion = EmotionUpdate.freqEmotion;
+		print("previous emotion:" + EmotionInput.lastEmotion + "---------current emotion:" + EmotionInput.currentEmotion);
 		EmotionInput.reset = true;
-		requester = new SignalRequester();
-		requester.message = message;
-		requester.Start();
-	}
-
-	void OnDestory()
-	{
-		requester.Stop();
 	}
 
 	/*---------------------------------------------------------------*/

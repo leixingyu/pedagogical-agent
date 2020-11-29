@@ -16,7 +16,7 @@ public class SignalRequester : RunAbleThread
 			string signal = "None";
 			bool gotMessage = false;
 
-			Debug.Log("----Sending Signal----");
+			//Debug.Log("----Sending Signal----");
 			client.SendFrame(message);
 
 			while (Running)
@@ -27,8 +27,8 @@ public class SignalRequester : RunAbleThread
 
 			if (gotMessage)
 			{
-				Debug.Log("----Recived Signal: " + signal);
-				EmotionInput.currentEmotion = signal;
+				//Debug.Log("----Recived Signal: " + signal);
+				EmotionInput.activeEmotion = signal;
 				Running = false;
 			}
         }

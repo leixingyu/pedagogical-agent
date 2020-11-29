@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using RootMotion.FinalIK;
 
-/* Setup Foot IK control by accessing final ik foot component (pre-set)
- * Needs to be called by the global control or in other places */
-
 public class FootControl : MonoBehaviour
 {
 	static FullBodyBipedIK ikSystem;

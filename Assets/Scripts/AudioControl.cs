@@ -21,9 +21,9 @@ public class AudioControl : MonoBehaviour
 		{
 			audioList = Resources.LoadAll(Global.davidAudio, typeof(AudioClip));
 		}
-
-		
+		audioPlayer.clip = (AudioClip)audioList[0];
 		maxAudio = audioList.Length;
+		audioPlayer.Play();
 	}
 
 	void JumpToAudio(int index)

@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
- 
-/* Get AudioSource automatically and trigger events
- * Works standalone */
 
  public class BeatDetection : MonoBehaviour
 {

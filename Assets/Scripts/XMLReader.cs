@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Xml;
 
-/* Takes a BML and triggers series of event (controls)
- * Calls Global control functionality */
-
 public class XMLReader : MonoBehaviour
 {
 	XmlDocument xml = new XmlDocument();
@@ -139,7 +136,7 @@ public class XMLReader : MonoBehaviour
 			if (root.ChildNodes.Item(action).Attributes["message"] != null)
 				message = root.ChildNodes.Item(action).Attributes["message"].Value;
 
-			currentEvent.RequestSignal(message);
+			currentEvent.CheckSignal();
 		}
 
 		if (eventName == "slide")

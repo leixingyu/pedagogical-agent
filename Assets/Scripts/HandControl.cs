@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 
-/* Setup Hand control by accessing pre-set animator components
- * Needs to be called by the global control or in other places */
-
 public class HandControl : MonoBehaviour
 {
 	static Animator anim;

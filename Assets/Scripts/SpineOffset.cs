@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/* Setup Offset component for character spine
- * Needs to be called by the global control or in other places */
-
 public class SpineOffset : MonoBehaviour
 {
 	public float offset = 0.0f;
