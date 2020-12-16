@@ -11,47 +11,11 @@ http://hpcg.purdue.edu/idealab/AffectiveAgents/
 
 ## Project Overview
 
-__Goal__: To create a fully procedural animated character
+__Walk Through__: https://youtu.be/iXXYbPlqv1s
 
-__Demo__: https://youtu.be/E59mXjoXK5g
+__Animation System Documentation__: https://drive.google.com/file/d/1xFSpbd6SmZxxkjolYZW8I2mIA2p864iQ/view?usp=sharing
 
-__Features__:
-
-1. State-machine based pose interpolation system
-
-2. IK arm and leg, and other high level joint controls
-
-3. Automated facial expression and features like lip-sync, eye gaze, eye blink
-
-4. Speech anaylsis and beat detection
-
-5. BML controlled procedural animation 
-
-__Components and Parameters__:
-
-1. Body Gesture
-
-- [pose index] Destination body pose
-- [speed] Animation Speed
-- [blend] Duration of animtion transition
-
-2. Facial Expression
-
-- [emotion] Range from four types of emotion (angry, sad, happy, bored)
-- [strength] Strength of Emotion
-
-3. Hand Pose
-
-- [side] Left or Right Side of the hand
-- [shape] Shape of the hand (relaxed, holding fist, pointing)
-
-4. Foot Status
-
-- [status] Lock to the ground / Float / Procedural stepping
-
-__Illustration__:
-
-![](https://github.com/sheldonlei/pedagogical-agent/blob/master/Assets/Resources/systemOverview.jpg)
+__Emotion Detection Documentation__: https://www.notion.so/Emotion-Recognition-Deployment-Instruction-6f853779e8664479812f4ee8bb999249
 
 ## Plugin
 
