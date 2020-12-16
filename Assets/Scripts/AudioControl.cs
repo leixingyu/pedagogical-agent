@@ -5,13 +5,14 @@ public class AudioControl : MonoBehaviour
 	static Object[] audioList;
 	static AudioSource audioPlayer;
 	static int maxAudio;
-	static int currentAudio = 0;
+	static int currentAudio;
 	GameObject character;
 
 	void Start()
     {
 		character = GameObject.FindGameObjectWithTag("Player");
 		audioPlayer = gameObject.GetComponent<AudioSource>();
+		currentAudio = 0;
 
 		if (character.name == Global.luna)
 		{

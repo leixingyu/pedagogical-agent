@@ -6,12 +6,13 @@ public class SlideControl : MonoBehaviour
 	static Renderer slideShader;
 	static Object[] textureList;
 	static int maxSlide;
-	static int currentSlide = 0;
+	static int currentSlide;
 
     void Start()
     {
 		// get the slide object's material
 		slide = GameObject.Find(Global.slideObj);
+		currentSlide = 0;
 		if (!slide)
 		{
 			print("slide gameobject not found");

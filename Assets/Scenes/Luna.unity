@@ -6621,7 +6621,7 @@ MonoBehaviour:
   globalEasing: 4
   configReady: 1
   inspStateFoldoutProcessing: 0
-  inspStateFoldoutSettings: 1
+  inspStateFoldoutSettings: 0
   inspStateFoldoutVisemes: 0
   inspCollectionDisplayMode: 0
   inspAnalysisDisplay: 0

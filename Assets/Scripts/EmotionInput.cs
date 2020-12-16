@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
 
+// used for triggering event when detecting emotion shift
+
 public class EmotionInput : MonoBehaviour
 {
 	private MasterControl currentEvent;

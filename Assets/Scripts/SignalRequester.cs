@@ -3,6 +3,8 @@ using NetMQ;
 using NetMQ.Sockets;
 using UnityEngine;
 
+// create a thread instance to communicate with python
+
 public class SignalRequester : RunAbleThread
 {
     public override void Run()

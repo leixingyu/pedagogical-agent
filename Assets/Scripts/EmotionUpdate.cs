@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+// used for constant update the most frequent emotion
 
 public class EmotionUpdate : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class EmotionUpdate : MonoBehaviour
 	public void RequestSignal()
 	{
 		requester = new SignalRequester();
-		requester.message = "checking------runtime: " + currentTime;
+		requester.message = "runtime: " + currentTime + "\nagent emotion: " + EmotionInput.currentEmotion;
 
 		requester.Start();
 		emotionList.Dequeue();
