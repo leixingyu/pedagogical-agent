@@ -1,4 +1,4 @@
-<div align="center">
+<div id="top" align="center">
 <h1 align="center">Pedagogical Agent (a procedural character animation system)</h1>
 
   <p align="center">
@@ -28,7 +28,24 @@
     <li><a href="#character-setup">Character Setup</a></li>
     <li><a href="#scene-structure">Scene Structure</a></li>
     <li><a href="#file-structure">File Structure</a></li>
+      <ul>
+        <li><a href="#overivew">Overview</a></li>
+        <li><a href="#resource-folder">Resource Folder</a></li>
+        <li><a href="#character-based-assets">Character-based Assets</a></li>
+      </ul>
     <li><a href="#character-components">Character Components</a></li>
+      <ul>
+        <li><a href="#system-components">System Components</a></li>
+        <li><a href="#salsa-3d-plugin">Salsa 3D plugin</a></li>
+        <li><a href="#final-ik-plugin">Final IK plugin</a></li>
+        <li><a href="#run-time-script">Run-time Script</a></li>
+      </ul>
+    <li><a href="#event-system">Event System</a></li>
+      <ul>
+        <li><a href="#system-components">System Components</a></li>
+        <li><a href="#custom-scripts">Custom Scripts</a></li>
+        <li><a href="#run-time-script">Run-time Script</a></li>
+      </ul>
     <li><a href="#plugin">Plugin</a></li>
   </ol>
 </details>
@@ -47,27 +64,35 @@ http://hpcg.purdue.edu/idealab/AffectiveAgents/
 
 > The source project is based on Unity 2018.3.6f1, the build is tested on Win10x64
 
+Unity Components:
+
 Download the [release package](https://github.com/leixingyu/pedagogical-agent/releases/tag/v0.4.0) which consists of both the final build and source code.
 
-Follow the instructions written in [__Animation System Documentation__](https://drive.google.com/file/d/1xFSpbd6SmZxxkjolYZW8I2mIA2p864iQ/view?usp=sharing)
-and [__Emotion Detection Documentation__](https://www.notion.so/Emotion-Recognition-Deployment-Instruction-6f853779e8664479812f4ee8bb999249)
+Emotion Recognition:
+
+[__Emotion Recognition Overview__](https://www.notion.so/emotion-recognition-2f2c082af6ba465fbb300c0d8d7e537c)
+[__Emotion Recognition Documentation__](https://www.notion.so/Emotion-Recognition-Deployment-Instruction-6f853779e8664479812f4ee8bb999249)
 
 ## Overview
+<p align="right"><a href="#top">back to top</a></p>
 
 The animated agent is controlled by four high-level controller:
+
+<img src="https://i.imgur.com/4sxHtvU.jpg" alt="overview" height="65%" width="65%">
 
 ### Master Controller
 
 - **Body Gesture**: Mecanim Control accesses the built-in state machine feature in Unity. 
 The procedurally generated body gesture is achieved by pose interpolation – the transitioning between any two predetermined poses sequentially.
 
-    Body Offset is added to generate randomness as well as emotion-based body variation such as leaning forward/backward, body contract/expand. 
-It contains a IK-based shoulder, hand control, a FK-based spine offset control and a Center of Gravity hip control.
+    Body Offset generate randomness as well as emotion-based body variation such as leaning forward/backward, body contract/expand. 
+It contains a IK-based shoulder, hand control, a FK-based spine offset control and a COG hip control.
 
 
 - **Facial Deformation**: Facial Expression has access to predetermined emotion including happy, bored, angry and content.
-The component blends naturally between each facial blendshapes (can adjust the strength of the deformation). 
-Accompany that with Salsa Plugin which enables facial automation including: random eye-blinks, eye gaze direction and lip-sync based on audio input.
+The component blends naturally between each facial blendshapes (and adjust the strength of the deformation). 
+
+    Salsa Plugin enables facial automation including: random eye-blinks, eye gaze direction and lip-sync based on audio input.
 Other subcomponents include eyebrow raise which is a natural reaction during speech that is generated algorithmically by Beat Detection.
 
 
@@ -75,7 +100,7 @@ Other subcomponents include eyebrow raise which is a natural reaction during spe
 Therefore, this component could overwrite hand shapes to relax, holding fist, stretched palm.
 
     The foot position is only visible when enabling full body camera view, 
-it has three modes: lock to the ground, free floating which inherit motion from mocap data, and procedural auto-stepping (wip).
+  it has three modes: lock to the ground, free floating which inherit motion from mocap data, and procedural auto-stepping (wip).
 
 ### XML Reader 
 
@@ -97,8 +122,9 @@ When a request for an emotional state update is received, the most frequent emot
 The Emotion Input performs events based on the returned emotion.
 
 ## User Interface
+<p align="right"><a href="#top">back to top</a></p>
 
-<img>
+<img src="https://i.imgur.com/THfWylf.png" alt="overview" height="65%" width="65%">
 
 | Menu Item  | Operation |
 | ------------- | ------------- |
@@ -111,8 +137,9 @@ The Emotion Input performs events based on the returned emotion.
 |Character button |		Switch character and restart the scene
 
 ## Debug GUI
+<p align="right"><a href="#top">back to top</a></p>
 
-<img>
+<img src="https://i.imgur.com/WowAc7Y.png" alt="overview" height="65%" width="65%">
 
 | Menu Item  | Operation |
 | ------------- | ------------- |
@@ -123,6 +150,7 @@ The Emotion Input performs events based on the returned emotion.
 |Body pose| 		Switch poses
 
 ## Character Setup
+<p align="right"><a href="#top">back to top</a></p>
 
 ### Character Requirement
 - **Joint**: ideally less than 40 joints
@@ -146,15 +174,17 @@ The character fbx should be placed in the character folder, adjust Animation Typ
 
 Existing character settings:
 
-- [David] Latest version: v2 
+- David Latest version: v2 
 scaling: 1.4
-- [Luna] Latest version: v3
+- Luna Latest version: v3
 scaling: 12
 
 (Note: when loaded in scene, adjust thumb joint scaling to 1, 
 all scale settings need to be adjusted in scene view, not in character configuration)
 
 ## Scene Structure
+
+<p align="right"><a href="#top">back to top</a></p>
 
 ### Overview of Hierarchy
 
@@ -172,15 +202,17 @@ all scale settings need to be adjusted in scene view, not in character configura
 | ------------- | ------------- |
 |BaseMesh| 		Skinned mesh (has Skinned mesh renderer for blendshapes)
 |Skeleton| 		Character joint hierarchy
-|Foot IKs| 		Pre-defined IK handle for locking the foot (see )
+|Foot IKs| 		Pre-defined IK handle for locking the foot
 
 
 ## File Structure
 
+<p align="right"><a href="#top">back to top</a></p>
+
 ### Overview
 | Hierarchy  | Description |
 | ------------- | ------------- |
-|Character| 		Character Mask, Avatar definition and Rig (.fbx)
+|Character| 		Character Mask, Avatar definition and Rig (`.fbx`)
 |Plugins| 		All plugin used (Salsa, Mecanim and FinalIK)
 |Resources| 		Assets accessed during run-time
 |Scenes|		Game scene (one for each character)
@@ -192,8 +224,8 @@ all scale settings need to be adjusted in scene view, not in character configura
 | ------------- | ------------- |
 |Audio|			In-game speech audio file
 |Controller| 		Animator logic controller (mecanim state machine)
-|HandShape|		Predefined hand pose (.fbx)
-|MotionLibrary| 	Predefined body pose (.fbx)
+|HandShape|		Predefined hand pose (`.fbx`)
+|MotionLibrary| 	Predefined body pose (`.fbx`)
 |not-in-use| 		PowerPoint slide not-in-use
 |Slide| 			PowerPoint slide texture
 |XML| 			character behavioral scripts
@@ -218,6 +250,8 @@ public static string davidAudio = "Audio/David";
 
 ## Character Components
 
+<p align="right"><a href="#top">back to top</a></p>
+
 ### System Component
 
 **Animator**: Animator component is required for a state machine-based animation transition. Using MecanimControl.cs evokes different states in animator for gesture transition.
@@ -232,7 +266,7 @@ public static string davidAudio = "Audio/David";
 
 **Eyes**: Salsa Eyes component is used to create random eye shifts, eye blinks
 
-- Properties controls random eye-gaze shift, adjust physical range and frequency
+- Properties control random eye-gaze shift, adjust physical range and frequency
 - Eyelid properties controls the random eye-blinks, adjust frequency
 - To use random eye + fix axis, unpack character prefab
 
@@ -280,6 +314,8 @@ to create body leaning forward or backward. (see `spineOffset.cs`)
 
 ## Event System
 
+<p align="right"><a href="#top">back to top</a></p>
+
 ### System Components
 
 **Event System, Standalone Input Module & Base Input (added in run-time)**:
@@ -300,7 +336,7 @@ This component is responsible for creating the GUI and connecting its functional
 Master control is the core and the wrapper of all controls, it initializes most of the run-time components (see masterControl.cs)
 
 **XML Reader**:
-XML Reader takes an XML file, the file specifies scripted behavior of the character, and the behavior will be layered on top.
+XML Reader takes an `.xml` file, the file specifies scripted behavior of the character, and the behavior will be layered on top.
 
 **Beat Detection (Disabled by default)**:
 Beat Detection component takes the current playing audio from the AudioSource, detects its beat and triggers onBeat event. The onIdle event is triggered whenever the beat duration is reached.
@@ -321,6 +357,8 @@ This component is added by EmotionInput.cs. It communicates with the emotion det
 
 
 ## Plugin
+
+<p align="right"><a href="#top">back to top</a></p>
 
 [Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290)
 
